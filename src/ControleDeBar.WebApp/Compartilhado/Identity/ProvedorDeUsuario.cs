@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using GeradorDeProvas.Dominio.Compartilhado.Identity;
+using ControleDeBar.Dominio.Compartilhado.Identity;
 
 namespace ControleDeBar.WebApp.Compartilhado.Identity;
 

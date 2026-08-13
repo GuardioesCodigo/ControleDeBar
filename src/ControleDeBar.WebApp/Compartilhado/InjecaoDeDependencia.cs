@@ -1,6 +1,6 @@
 using ControleDeBar.WebApp.Compartilhado.Identity;
 using ControleDeBar.WebApp.Compartilhado.Mapping;
-using GeradorDeProvas.Dominio.Compartilhado.Identity;
+using ControleDeBar.Dominio.Compartilhado.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 

@@ -9,11 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Configuração do container de injeção de dependência
 builder.Services.AddInfraRepositories(builder.Configuration, builder.Logging);
-
-builder.Services.AddApplicationServices();
-
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddPresentationConfig(builder.Configuration);
 
+// Configura health checks do banco de dados
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<ControleDeBarDbContext>(
         name: "database_check",
@@ -33,12 +32,15 @@ if (app.Environment.IsDevelopment())
     dbContext.Database.Migrate();
 }
 
-
 // Middlewares de roteamento
 app.UseRouting();
-app.MapDefaultControllerRoute();
 
-app.MapHealthChecks("/health");
+// Middlewares de Auth
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Middleware de reconhecimento de rotas de controllers
+app.MapDefaultControllerRoute();
 
 // Execução do Servidor
 app.Run();
