@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ControleDeBar.Dominio/ControleDeBar.Dominio.csproj" />
+    <Project Path="src/ControleDeBar.Infra/ControleDeBar.Infra.csproj" />
+    <Project Path="src/ControleDeBar.WebApp/ControleDeBar.WebApp.csproj" />
+  </Folder>
+  <Folder Name="/src/ControleDeBar.Aplicacao/">
+    <Project Path="src/ControleDeBar.Aplicacao/ControleDeBarAplicacao.csproj" />
+  </Folder>
+</Solution>
