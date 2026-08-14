@@ -1,4 +1,4 @@
-namespace GeradorDeProvas.Dominio.Compartilhado.Identity;
+namespace ControleDeBar.Dominio.Compartilhado.Identity;
 
 public interface IProvedorDeUsuario
 {
