@@ -1,5 +1,17 @@
+using ControleDeBar.Dominio.Modulos.ModuloConta;
+using ControleDeBar.Dominio.Modulos.ModuloEstabelecimento;
+using ControleDeBar.Dominio.Modulos.ModuloGarcom;
+using ControleDeBar.Dominio.Modulos.ModuloMesa;
+using ControleDeBar.Dominio.Modulos.ModuloPedido;
+using ControleDeBar.Dominio.Modulos.ModuloProduto;
 using ControleDeBar.Infra.Compartilhado.Logging;
 using ControleDeBar.Infra.Compartilhado.Orm;
+using ControleDeBar.Infra.Modulos.ModuloConta;
+using ControleDeBar.Infra.Modulos.ModuloEstabelecimento;
+using ControleDeBar.Infra.Modulos.ModuloGarcom;
+using ControleDeBar.Infra.Modulos.ModuloMesa;
+using ControleDeBar.Infra.Modulos.ModuloPedido;
+using ControleDeBar.Infra.Modulos.ModuloProduto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -60,5 +72,13 @@ public static class InjecaoDeDependencia
         .AddEntityFrameworkStores<ControleDeBarDbContext>() // Integração com EntityFramework
         .AddSignInManager() // Configuração do SignInManager
         .AddDefaultTokenProviders();
+
+        // Injeta os repositórios de cada módulo
+        services.AddScoped<IRepositorioEstabelecimento, RepositorioEstabelecimentoEmOrm>();
+        services.AddScoped<IRepositorioMesa, RepositorioMesaEmOrm>();
+        services.AddScoped<IRepositorioGarcom, RepositorioGarcomEmOrm>();
+        services.AddScoped<IRepositorioProduto, RepositorioProdutoEmOrm>();
+        services.AddScoped<IRepositorioConta, RepositorioContaEmOrm>();
+        services.AddScoped<IRepositorioPedido, RepositorioPedidoEmOrm>();
     }
 }
