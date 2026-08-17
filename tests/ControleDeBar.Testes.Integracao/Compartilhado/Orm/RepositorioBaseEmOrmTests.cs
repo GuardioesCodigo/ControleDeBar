@@ -1,83 +1,42 @@
 using ControleDeBar.Infra.Compartilhado.Orm;
-using ControleDeBar.Infra.Modulos.ModuloCategoria;
-using ControleDeBar.Infra.Modulos.ModuloCompromisso;
-using ControleDeBar.Infra.Modulos.ModuloContato;
-using ControleDeBar.Infra.Modulos.ModuloDespesa;
-using ControleDeBar.Infra.Modulos.ModuloTarefa;
+using ControleDeBar.Infra.Modulos.ModuloConta;
+using ControleDeBar.Infra.Modulos.ModuloEstabelecimento;
+using ControleDeBar.Infra.Modulos.ModuloGarcom;
+using ControleDeBar.Infra.Modulos.ModuloMesa;
+using ControleDeBar.Infra.Modulos.ModuloPedido;
+using ControleDeBar.Infra.Modulos.ModuloProduto;
 using Microsoft.EntityFrameworkCore;
-using FizzWare.NBuilder;
-using ControleDeBar.Dominio.Modulos.ModuloContato;
-using ControleDeBar.Dominio.Modulos.ModuloCompromisso;
-using ControleDeBar.Dominio.Modulos.ModuloCategoria;
-using ControleDeBar.Dominio.Modulos.ModuloDespesa;
-using ControleDeBar.Dominio.Modulos.ModuloTarefa;
 
 namespace ControleDeBar.Testes.Integracao.Compartilhado.Orm;
 
 public abstract class RepositorioBaseEmOrmTests
 {
     protected ControleDeBarDbContext dbContext = null!;
-    protected RepositorioContatoEmOrm repositorioContato = null!;
-    protected RepositorioCompromissoEmOrm repositorioCompromisso = null!;
-    protected RepositorioCategoriaEmOrm repositorioCategoria = null!;
-    protected RepositorioDespesaEmOrm repositorioDespesa = null!;
-    protected RepositorioTarefaEmOrm repositorioTarefa = null!;
+    protected ProvedorDeUsuarioFake provedorDeUsuario = null!;
 
-    // Hooks / Ganchos
+    protected RepositorioEstabelecimentoEmOrm repositorioEstabelecimento = null!;
+    protected RepositorioMesaEmOrm repositorioMesa = null!;
+    protected RepositorioGarcomEmOrm repositorioGarcom = null!;
+    protected RepositorioProdutoEmOrm repositorioProduto = null!;
+    protected RepositorioContaEmOrm repositorioConta = null!;
+    protected RepositorioPedidoEmOrm repositorioPedido = null!;
+
+    private string nomeBanco = string.Empty;
+
     [TestInitialize]
     public void InicializarContexto()
     {
+        nomeBanco = $"integracao-{Guid.NewGuid():N}";
+        provedorDeUsuario = new ProvedorDeUsuarioFake { Id = Guid.CreateVersion7() };
+
         dbContext = CriarDbContext();
 
-        // Contato
-        repositorioContato = new RepositorioContatoEmOrm(dbContext);
-
-        BuilderSetup.SetCreatePersistenceMethod<Contato>(repositorioContato.Cadastrar);
-        BuilderSetup.SetCreatePersistenceMethod<IList<Contato>>((contatos) =>
-        {
-            foreach (Contato c in contatos)
-                repositorioContato.Cadastrar(c);
-        });
-
-        // Compromisso
-        repositorioCompromisso = new RepositorioCompromissoEmOrm(dbContext);
-
-        BuilderSetup.SetCreatePersistenceMethod<Compromisso>(repositorioCompromisso.Cadastrar);
-        BuilderSetup.SetCreatePersistenceMethod<IList<Compromisso>>((compromissos) =>
-        {
-            foreach (Compromisso c in compromissos)
-                repositorioCompromisso.Cadastrar(c);
-        });
-
-        // Categoria
-        repositorioCategoria = new RepositorioCategoriaEmOrm(dbContext);
-
-        BuilderSetup.SetCreatePersistenceMethod<Categoria>(repositorioCategoria.Cadastrar);
-        BuilderSetup.SetCreatePersistenceMethod<IList<Categoria>>((categorias) =>
-        {
-            foreach (Categoria c in categorias)
-                repositorioCategoria.Cadastrar(c);
-        });
-
-        // Despesa
-        repositorioDespesa = new RepositorioDespesaEmOrm(dbContext);
-
-        BuilderSetup.SetCreatePersistenceMethod<Despesa>(repositorioDespesa.Cadastrar);
-        BuilderSetup.SetCreatePersistenceMethod<IList<Despesa>>((despesas) =>
-        {
-            foreach (Despesa d in despesas)
-                repositorioDespesa.Cadastrar(d);
-        });
-
-        // Tarefa
-        repositorioTarefa = new RepositorioTarefaEmOrm(dbContext);
-
-        BuilderSetup.SetCreatePersistenceMethod<Tarefa>(repositorioTarefa.Cadastrar);
-        BuilderSetup.SetCreatePersistenceMethod<IList<Tarefa>>((tarefas) =>
-        {
-            foreach (Tarefa t in tarefas)
-                repositorioTarefa.Cadastrar(t);
-        });
+        repositorioEstabelecimento = new RepositorioEstabelecimentoEmOrm(dbContext);
+        repositorioMesa = new RepositorioMesaEmOrm(dbContext);
+        repositorioGarcom = new RepositorioGarcomEmOrm(dbContext);
+        repositorioProduto = new RepositorioProdutoEmOrm(dbContext);
+        repositorioConta = new RepositorioContaEmOrm(dbContext);
+        repositorioPedido = new RepositorioPedidoEmOrm(dbContext);
     }
 
     [TestCleanup]
@@ -86,13 +45,29 @@ public abstract class RepositorioBaseEmOrmTests
         dbContext.Dispose();
     }
 
-    private static ControleDeBarDbContext CriarDbContext()
+    // Troca o "usuário autenticado" simulado mantendo o mesmo banco em memória,
+    // para testar cenários de isolamento entre dois estabelecimentos distintos.
+    protected ControleDeBarDbContext CriarContextoParaOutroEstabelecimento(out Guid novoUserId)
+    {
+        novoUserId = Guid.CreateVersion7();
+
+        ProvedorDeUsuarioFake outroProvedor = new() { Id = novoUserId };
+
+        DbContextOptions<ControleDeBarDbContext> options =
+            new DbContextOptionsBuilder<ControleDeBarDbContext>()
+                .UseInMemoryDatabase(nomeBanco)
+                .Options;
+
+        return new ControleDeBarDbContext(options, outroProvedor);
+    }
+
+    private ControleDeBarDbContext CriarDbContext()
     {
         DbContextOptions<ControleDeBarDbContext> options =
             new DbContextOptionsBuilder<ControleDeBarDbContext>()
-                .UseInMemoryDatabase($"integracao-{Guid.NewGuid():N}")
+                .UseInMemoryDatabase(nomeBanco)
                 .Options;
 
-        return new ControleDeBarDbContext(options);
+        return new ControleDeBarDbContext(options, provedorDeUsuario);
     }
 }
