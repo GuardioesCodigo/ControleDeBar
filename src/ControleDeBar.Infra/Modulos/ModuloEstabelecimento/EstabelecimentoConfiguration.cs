@@ -22,5 +22,10 @@ public sealed class EstabelecimentoConfiguration : IEntityTypeConfiguration<Esta
 
         builder.Property(e => e.Endereco)
             .HasMaxLength(200);
+
+        // Um estabelecimento por usuário.
+        builder.HasIndex(e => e.UserId)
+            .IsUnique()
+            .HasDatabaseName("UQ_TBEstabelecimento_UserId");
     }
 }

@@ -1,12 +1,15 @@
 using ControleDeBar.Dominio.Compartilhado;
+using ControleDeBar.Dominio.Compartilhado.Identity;
 
 namespace ControleDeBar.Dominio.Modulos.ModuloEstabelecimento;
 
-public sealed class Estabelecimento : EntidadeBase<Estabelecimento>
+public sealed class Estabelecimento : EntidadeBase<Estabelecimento>, IEntidadeDoUsuario
 {
     public string Nome { get; set; } = string.Empty;
     public string? Endereco { get; set; }
     public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
+    public Guid UserId { get; set; }
+
 
     public override List<string> Validar()
     {
