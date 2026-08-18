@@ -2,8 +2,6 @@ using ControleDeBar.Dominio.Modulos.ModuloMesa;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ControleDeBar.Infra.Modulos.ModuloMesa;
-
 public sealed class MesaConfiguration : IEntityTypeConfiguration<Mesa>
 {
     public void Configure(EntityTypeBuilder<Mesa> builder)
@@ -21,9 +19,14 @@ public sealed class MesaConfiguration : IEntityTypeConfiguration<Mesa>
             .HasMaxLength(20)
             .IsRequired();
 
-        // Número da mesa único por estabelecimento (regra de negócio).
-        builder.HasIndex(m => new { m.UserId, m.Numero })
+        builder.HasOne(m => m.Estabelecimento)
+            .WithMany()
+            .HasForeignKey(m => m.EstabelecimentoId)
+            .HasConstraintName("FK_TBMesa_TBEstabelecimento")
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(m => new { m.EstabelecimentoId, m.Numero })
             .IsUnique()
-            .HasDatabaseName("UQ_TBMesa_UserId_Numero");
+            .HasDatabaseName("UQ_TBMesa_EstabelecimentoId_Numero");
     }
 }
