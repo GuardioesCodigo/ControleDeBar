@@ -7,13 +7,13 @@
     @* Importação do CSS do Bootstrap *@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
-    <title>@ViewBag.Titulo - Gerador De Provas</title>
+    <title>@ViewBag.Titulo - Controle de Bar</title>
 </head>
 <body>
     @* Barra de Navegação *@
     <nav class="navbar navbar-expand-lg bg-white border-bottom">
         <div class="container">
-            <a class="navbar-brand fw-semibold" asp-controller="Home" asp-action="Index">Gerador De Provas</a>
+            <a class="navbar-brand fw-semibold" asp-controller="Home" asp-action="Index">Controle de Bar</a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -24,9 +24,12 @@
                 {
                     <div class="navbar-nav ms-auto">
                         <a class="nav-link" asp-controller="Home" asp-action="Index">Início</a>
-                        <a class="nav-link" asp-controller="Disciplina" asp-action="Listar">Disciplinas</a>
-                        <a class="nav-link" asp-controller="Materia" asp-action="Listar">Matérias</a>
-                        <a class="nav-link" asp-controller="Questao" asp-action="Listar">Questões</a>
+                        <a class="nav-link" asp-controller="Mesa" asp-action="Listar">Mesas</a>
+                        <a class="nav-link" asp-controller="Garcom" asp-action="Listar">Garçons</a>
+                        <a class="nav-link" asp-controller="Produto" asp-action="Listar">Produtos</a>
+                        <a class="nav-link" asp-controller="Conta" asp-action="Listar">Contas</a>
+                        <a class="nav-link" asp-controller="Faturamento" asp-action="Visualizar">Faturamento</a>
+                        <a class="nav-link" asp-controller="Estabelecimento" asp-action="Visualizar">Estabelecimento</a>
                     </div>
 
                     <div class="dropdown ms-3">

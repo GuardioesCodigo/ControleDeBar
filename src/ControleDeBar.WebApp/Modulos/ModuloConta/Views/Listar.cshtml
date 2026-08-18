@@ -1,0 +1,58 @@
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Contas";
+}
+
+@model List<ListarContaViewModel>;
+
+<a class="btn btn-outline-primary rounded-pill px-4 mb-3" asp-action="Abrir">+ Abrir Conta</a>
+
+@if (TempData["MensagemErro"] is string mensagemErro)
+{
+    <div class="alert alert-danger border-start border-danger border-4 rounded-3" role="alert">
+        @mensagemErro
+    </div>
+}
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-primary border-start border-primary border-4 rounded-3" role="alert">
+        Nenhuma conta cadastrada.
+    </div>
+}
+else
+{
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Mesa</th>
+                <th>Garçom</th>
+                <th>Situação</th>
+                <th>Total</th>
+                <th class="text-end">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (ListarContaViewModel c in Model)
+            {
+                <tr>
+                    <td>@c.NomeCliente</td>
+                    <td>@c.NumeroMesa</td>
+                    <td>@c.NomeGarcom</td>
+                    <td>
+                        <span class="badge rounded-pill @(c.Situacao == SituacaoConta.Aberta ? "text-bg-success" : "text-bg-secondary")">@c.Situacao</span>
+                    </td>
+                    <td>@c.ValorTotal.ToString("C")</td>
+                    <td class="text-end">
+                        <a class="btn btn-outline-primary btn-sm rounded-pill px-3" asp-action="Visualizar" asp-route-id="@c.Id">Ver</a>
+                        @if (c.Situacao == SituacaoConta.Aberta)
+                        {
+                            <a class="btn btn-outline-secondary btn-sm rounded-pill px-3" asp-action="Editar" asp-route-id="@c.Id">Editar</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

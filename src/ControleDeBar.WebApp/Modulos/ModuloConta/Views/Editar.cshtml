@@ -1,0 +1,35 @@
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Editar Conta";
+}
+
+@model EditarContaViewModel;
+
+<form asp-action="Editar" method="post" class="col-12 col-md-6">
+    <input asp-for="Id" type="hidden" />
+
+    <div class="mb-3">
+        <label asp-for="NomeCliente" class="form-label">Nome do Cliente</label>
+        <input asp-for="NomeCliente" class="form-control" />
+        <span asp-validation-for="NomeCliente" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MesaId" class="form-label">Mesa</label>
+        <select asp-for="MesaId" class="form-select" asp-items="Model.Mesas"></select>
+        <span asp-validation-for="MesaId" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="GarcomId" class="form-label">Garçom</label>
+        <select asp-for="GarcomId" class="form-select" asp-items="Model.Garcons"></select>
+        <span asp-validation-for="GarcomId" class="text-danger small"></span>
+    </div>
+
+    <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+
+    <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-primary rounded-pill px-4">Salvar</button>
+        <a asp-action="Listar" class="btn btn-outline-secondary rounded-pill px-4">Cancelar</a>
+    </div>
+</form>
