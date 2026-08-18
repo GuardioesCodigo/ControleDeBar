@@ -1,0 +1,46 @@
+@using ControleDeBar.WebApp.Modulos.ModuloGarcom
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Garçons";
+}
+
+@model List<ListarGarcomViewModel>
+
+<a class="btn btn-outline-primary rounded-pill px-4 mb-3" asp-action="Cadastrar">+ Novo Garçom</a>
+
+@if (TempData["MensagemErro"] is string mensagemErro)
+{
+    <div class="alert alert-danger border-start border-danger border-4 rounded-3" role="alert">
+        @mensagemErro
+    </div>
+}
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-primary border-start border-primary border-4 rounded-3" role="alert">
+        Nenhum garçom cadastrado.
+    </div>
+}
+else
+{
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th class="text-end">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (ListarGarcomViewModel g in Model)
+            {
+                <tr>
+                    <td>@g.Nome</td>
+                    <td class="text-end">
+                        <a class="btn btn-outline-primary btn-sm rounded-pill px-3" asp-action="Editar" asp-route-id="@g.Id">Editar</a>
+                        <a class="btn btn-outline-danger btn-sm rounded-pill px-3" asp-action="Excluir" asp-route-id="@g.Id">Excluir</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
