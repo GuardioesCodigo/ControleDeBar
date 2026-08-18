@@ -1,0 +1,52 @@
+@using ControleDeBar.WebApp.Modulos.ModuloMesa
+@using ControleDeBar.Dominio.Modulos.ModuloMesa
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Listagem de Mesas";
+}
+
+@model List<ListarMesaViewModel>
+
+<a class="btn btn-outline-primary rounded-pill px-4 mb-3" asp-action="Cadastrar">+ Nova Mesa</a>
+
+@if (TempData["MensagemErro"] is string mensagemErro)
+{
+    <div class="alert alert-danger border-start border-danger border-4 rounded-3" role="alert">
+        @mensagemErro
+    </div>
+}
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-primary border-start border-primary border-4 rounded-3" role="alert">
+        Nenhuma mesa cadastrada.
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-2">
+        @foreach (ListarMesaViewModel m in Model)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                            <h5 class="card-title mb-0">Mesa @m.Numero</h5>
+                            <span class="badge rounded-pill @(m.Status == StatusMesa.Livre ? "text-bg-success" : "text-bg-warning")">@m.Status</span>
+                        </div>
+
+                        <dl class="row g-2 mb-4">
+                            <dt class="col-6 text-secondary fw-semibold">Lugares</dt>
+                            <dd class="col-6 mb-0">@m.QuantidadeLugares</dd>
+                        </dl>
+
+                        <div class="d-flex flex-wrap gap-2 mt-auto justify-content-end">
+                            <a class="btn btn-outline-primary btn-sm rounded-pill px-3" asp-action="Editar" asp-route-id="@m.Id">Editar</a>
+                            <a class="btn btn-outline-danger btn-sm rounded-pill px-3" asp-action="Excluir" asp-route-id="@m.Id">Excluir</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
