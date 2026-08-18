@@ -19,5 +19,11 @@ public sealed class GarcomConfiguration : IEntityTypeConfiguration<Garcom>
         builder.Property(g => g.Nome)
             .HasMaxLength(100)
             .IsRequired();
+
+        builder.HasOne(g => g.Estabelecimento)
+            .WithMany()
+            .HasForeignKey(g => g.EstabelecimentoId)
+            .HasConstraintName("FK_TBGarcom_TBEstabelecimento")
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
