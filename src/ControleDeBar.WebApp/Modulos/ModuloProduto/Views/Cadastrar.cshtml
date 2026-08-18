@@ -1,0 +1,27 @@
+@using ControleDeBar.WebApp.Modulos.ModuloProduto
+@{
+    Layout = "_Layout";
+}
+
+@model CadastrarProdutoViewModel
+
+<form asp-action="Cadastrar" method="post" class="col-12 col-md-6">
+    <div class="mb-3">
+        <label asp-for="Nome" class="form-label">Nome</label>
+        <input asp-for="Nome" class="form-control" />
+        <span asp-validation-for="Nome" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Preco" class="form-label">Preço</label>
+        <input asp-for="Preco" class="form-control" type="number" step="0.01" />
+        <span asp-validation-for="Preco" class="text-danger small"></span>
+    </div>
+
+    <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+
+    <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-primary rounded-pill px-4">Cadastrar</button>
+        <a asp-action="Listar" class="btn btn-outline-secondary rounded-pill px-4">Cancelar</a>
+    </div>
+</form>
