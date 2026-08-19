@@ -1,4 +1,5 @@
 using ControleDeBar.Aplicacao.Modulos.ModuloConta;
+using ControleDeBar.Aplicacao.Modulos.ModuloEstabelecimento;
 using ControleDeBar.Aplicacao.Modulos.ModuloFaturamento;
 using ControleDeBar.Aplicacao.Modulos.ModuloGarcom;
 using ControleDeBar.Aplicacao.Modulos.ModuloMesa;
@@ -20,5 +21,6 @@ public static class InjecaoDependencia
         services.AddScoped<ServicoMesa>();
         services.AddScoped<ServicoGarcom>();
         services.AddScoped<ServicoFaturamento>();
+        services.AddScoped<ServicoEstabelecimento>();
     }
 }
