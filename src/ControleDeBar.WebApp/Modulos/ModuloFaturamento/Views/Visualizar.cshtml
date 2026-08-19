@@ -1,0 +1,68 @@
+@using ControleDeBar.WebApp.Modulos.ModuloFaturamento
+@{
+    Layout = "_Layout";
+}
+
+@model VisualizarFaturamentoViewModel
+
+<form method="get" class="row g-2 align-items-end mb-4" style="max-width: 320px;">
+    <div class="col-8">
+        <label asp-for="Data" class="form-label small">Data</label>
+        <input asp-for="Data" type="date" class="form-control" />
+    </div>
+
+    <div class="col-4">
+        <button type="submit" class="btn btn-outline-primary rounded-pill w-100">
+            Ver
+        </button>
+    </div>
+</form>
+
+<div class="card border-0 shadow-sm p-4 mb-4" style="max-width: 420px;">
+    <span class="text-muted small text-uppercase">
+        Faturamento de @Model.Data.ToString(format: "dd/MM/yyyy")
+    </span>
+
+    <h2 class="mb-0">@Model.ValorTotal.ToString(format: "C")</h2>
+</div>
+
+<h5 class="mb-3">Contas Fechadas</h5>
+
+@if (Model.ContasFechadas.Count == 0)
+{
+    <div class="alert alert-primary border-start border-primary border-4 rounded-3" role="alert">
+        Nenhuma conta fechada nesta data.
+    </div>
+}
+else
+{
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Mesa</th>
+                <th>Garçom</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (ContaFechadaViewModel c in Model.ContasFechadas)
+            {
+                <tr>
+                    <td>@c.NomeCliente</td>
+                    <td>@c.NumeroMesa</td>
+                    <td>@c.NomeGarcom</td>
+                    <td>@c.ValorTotal.ToString(format: "C")</td>
+                </tr>
+            }
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <th colspan="3" class="text-end">Total Geral</th>
+                <th>@Model.ValorTotal.ToString(format: "C")</th>
+            </tr>
+        </tfoot>
+    </table>
+}
