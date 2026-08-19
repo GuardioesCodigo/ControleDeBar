@@ -1,0 +1,144 @@
+@using ControleDeBar.WebApp.Modulos.ModuloConta
+@using ControleDeBar.Dominio.Modulos.ModuloConta
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@model VisualizarContaViewModel
+
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = $"Conta - {Model.NomeCliente}";
+}
+
+@if (TempData["MensagemErro"] is string mensagemErro)
+{
+    <div class="alert alert-danger border-start border-danger border-4 rounded-3" role="alert">
+        @mensagemErro
+    </div>
+}
+
+<div class="card border-0 shadow-sm p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+        <div>
+            <h5 class="mb-1">@Model.NomeCliente</h5>
+            <span class="text-muted small">
+                Mesa @Model.NumeroMesa &middot; Garçom @Model.NomeGarcom
+            </span>
+            <br />
+            <span class="text-muted small">
+                Aberta em @Model.DataAbertura.ToString(format: "dd/MM/yyyy HH:mm")
+            </span>
+        </div>
+
+        <span class="badge rounded-pill align-self-start @(Model.Situacao == SituacaoConta.Aberta ? "text-bg-success" : "text-bg-secondary")">
+            @Model.Situacao
+        </span>
+    </div>
+</div>
+
+<h5 class="mb-3">Pedidos</h5>
+
+@if (Model.Pedidos.Count == 0)
+{
+    <div class="alert alert-primary border-start border-primary border-4 rounded-3" role="alert">
+        Nenhum pedido lançado nesta conta ainda.
+    </div>
+}
+else
+{
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Subtotal</th>
+
+                @if (Model.Situacao == SituacaoConta.Aberta)
+                {
+                    <th class="text-end">Ações</th>
+                }
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (ItemPedidoViewModel p in Model.Pedidos)
+            {
+                <tr>
+                    <td>@p.NomeProduto</td>
+                    <td>@p.Quantidade</td>
+                    <td>@p.Subtotal.ToString(format: "C")</td>
+
+                    @if (Model.Situacao == SituacaoConta.Aberta)
+                    {
+                        <td class="text-end">
+                            <form asp-controller="Pedido"
+                                  asp-action="Remover"
+                                  method="post"
+                                  class="d-inline">
+
+                                <input type="hidden" name="id" value="@p.Id" />
+                                <input type="hidden" name="contaId" value="@Model.Id" />
+
+                                <button type="submit"
+                                        class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                                    Remover
+                                </button>
+                            </form>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <th colspan="2" class="text-end">Total</th>
+                <th colspan="2">@Model.ValorTotal.ToString("C")</th>
+            </tr>
+        </tfoot>
+    </table>
+}
+
+@if (Model.Situacao == SituacaoConta.Aberta)
+{
+    <div class="card border-0 shadow-sm p-4 mt-4" style="max-width: 620px;">
+        <h6 class="mb-3">Adicionar Pedido</h6>
+
+        <form asp-controller="Pedido"
+              asp-action="Adicionar"
+              method="post"
+              class="row g-2 align-items-end">
+
+            <input type="hidden" name="ContaId" value="@Model.Id" />
+
+            <div class="col-7">
+                <label class="form-label small">Produto</label>
+                <select name="ProdutoId"
+                        class="form-select"
+                        asp-items="(IEnumerable<SelectListItem>)ViewBag.Produtos">
+                    <option value="">Selecione</option>
+                </select>
+            </div>
+
+            <div class="col-3">
+                <label class="form-label small">Quantidade</label>
+                <input name="Quantidade"
+                       type="number"
+                       min="1"
+                       value="1"
+                       class="form-control" />
+            </div>
+
+            <div class="col-2">
+                <button type="submit" class="btn btn-primary rounded-pill w-100">+</button>
+            </div>
+        </form>
+    </div>
+
+    <form asp-controller="Conta" asp-action="Fechar" method="post" class="mt-4">
+        <input type="hidden" name="id" value="@Model.Id" />
+
+        <button type="submit" class="btn btn-danger rounded-pill px-4">
+            Fechar Conta
+        </button>
+    </form>
+}
