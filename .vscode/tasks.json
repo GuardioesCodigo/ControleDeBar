@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "sqlproj: Build ControleDeBar.Database",
+			"type": "process",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"c:/Users/Cliente/Desktop/AcademiaProgramador/MODULO5/ControleDeBar/ControleDeBar.Database/ControleDeBar.Database.sqlproj"
+			],
+			"problemMatcher": "$sqlproj-problem-matcher",
+			"isBackground": true,
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"detail": "Builds the ControleDeBar.Database SQL project"
+		}
+	]
+}
