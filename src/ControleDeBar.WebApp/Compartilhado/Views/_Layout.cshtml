@@ -21,6 +21,13 @@
         <div class="row min-vh-100">
             <aside class="col-md-2 col-lg-2 bg-light border-end p-0">
                 <nav class="nav flex-column">
+
+                    <a class="nav-link text-dark px-3 py-2"
+                       asp-controller="Home"
+                       asp-action="Index">
+                        Página Inicial
+                    </a>          
+
                     <a class="nav-link text-dark px-3 py-2"
                        asp-controller="Mesa"
                        asp-action="Listar">
@@ -53,7 +60,7 @@
 
                     <a class="nav-link text-dark px-3 py-2"
                        asp-controller="Estabelecimento"
-                       asp-action="Visualizar">
+                       asp-action="Listar">
                         Estabelecimento
                     </a>
                 </nav>
