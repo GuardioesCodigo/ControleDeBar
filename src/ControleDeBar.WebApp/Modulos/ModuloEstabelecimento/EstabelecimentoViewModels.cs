@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ControleDeBar.WebApp.Modulos.ModuloEstabelecimento;
 
-public class CadastrarEstabelecimentoViewModel(
+public record CadastrarEstabelecimentoViewModel(
     [Required(ErrorMessage = "O campo \"Nome\" deve ser preenchido.")]
     [StringLength(
         100,
@@ -16,11 +16,7 @@ public class CadastrarEstabelecimentoViewModel(
         ErrorMessage = "O campo \"Endereço\" deve conter no máximo 200 caracteres."
     )]
     string? Endereco
-)
-{
-    public string Nome { get; } = Nome;
-    public string? Endereco { get; } = Endereco;
-}
+);
 
 public record DetalhesEstabelecimentoViewModel(
     Guid Id,

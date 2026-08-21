@@ -6,17 +6,34 @@
 @model IndexViewModel
 
 <div class="py-2">
+
     <h2 class="mb-3">Bem-vindo!</h2>
+    
+    @if (string.IsNullOrWhiteSpace(Model.NomeEstabelecimento))
+    {
+        <p class="mb-3">
+            Você ainda não possui um estabelecimento cadastrado.
+        </p>
 
-    <p class="mb-3">
-        Estabelecimento: <strong>@Model.NomeEstabelecimento</strong>
-    </p>
+        <a class="btn btn-primary rounded-pill px-4"
+        asp-controller="Estabelecimento"
+        asp-action="Cadastrar">
+            Cadastrar Estabelecimento
+        </a>
+    }
+    else
+    {
 
-    <a class="btn btn-primary rounded-pill px-4"
-       asp-controller="Estabelecimento"
-       asp-action="Editar">
-        Editar Estabelecimento
-    </a>
+        <p class="mb-3">
+            Estabelecimento: <strong>@Model.NomeEstabelecimento</strong>
+        </p>
+
+        <a class="btn btn-primary rounded-pill px-4"
+        asp-controller="Estabelecimento"
+        asp-action="Editar">
+            Editar Estabelecimento
+        </a>
+    }
 
     <h5 class="mt-4 mb-3">Resumo do dia</h5>
 
