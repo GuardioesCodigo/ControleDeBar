@@ -101,4 +101,28 @@ public sealed class ServicoPedidoTests
         Assert.IsTrue(resultado.IsSuccess);
         repositorioPedidoMock.Verify(r => r.Cadastrar(It.Is<Pedido>(p => p.Quantidade == 2)), Times.Once);
     }
+
+    [TestMethod]
+    public void Registrar_DevePermitirOMesmoProdutoEmDoisPedidosDistintosNaMesmaConta()
+    {
+        // CT-PED-014
+        Conta contaAberta = new()
+        {
+            NomeCliente = "Cliente X",
+            MesaId = Guid.NewGuid(),
+            GarcomId = Guid.NewGuid(),
+            Situacao = SituacaoConta.Aberta
+        };
+        Produto produto = new() { Nome = "Hambúrguer", Preco = 28m };
+
+        repositorioContaMock.Setup(r => r.SelecionarPorId(It.IsAny<Guid>())).Returns(contaAberta);
+        repositorioProdutoMock.Setup(r => r.SelecionarPorId(It.IsAny<Guid>())).Returns(produto);
+
+        Result primeiroPedido = servicoPedido.Registrar(new CadastrarPedidoDto(contaAberta.Id, produto.Id, 1));
+        Result segundoPedido = servicoPedido.Registrar(new CadastrarPedidoDto(contaAberta.Id, produto.Id, 2));
+
+        Assert.IsTrue(primeiroPedido.IsSuccess);
+        Assert.IsTrue(segundoPedido.IsSuccess);
+        repositorioPedidoMock.Verify(r => r.Cadastrar(It.IsAny<Pedido>()), Times.Exactly(2));
+    }
 }

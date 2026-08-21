@@ -1,6 +1,8 @@
 using ControleDeBar.Dominio.Modulos.ModuloConta;
 using ControleDeBar.Dominio.Modulos.ModuloGarcom;
 using ControleDeBar.Dominio.Modulos.ModuloMesa;
+using ControleDeBar.Dominio.Modulos.ModuloProduto;
+using ControleDeBar.Infra.Compartilhado.Orm;
 
 namespace ControleDeBar.Testes.Integracao.Modulos.ModuloConta;
 
@@ -119,5 +121,65 @@ public sealed class RepositorioContaEmOrmTests : Compartilhado.Orm.RepositorioBa
 
         Assert.IsNotNull(contaComPedidos);
         Assert.AreEqual(74m, contaComPedidos.ValorTotal); // 2*28 + 3*6 = 74
+    }
+
+    [TestMethod]
+    public void SelecionarTodos_DeveRetornarTodasAsContasDoEstabelecimento()
+    {
+        // CT-CTA-007
+        Mesa mesa1 = CriarMesa(1);
+        Mesa mesa2 = CriarMesa(2);
+        Garcom garcom = CriarGarcom();
+
+        repositorioConta.Cadastrar(new Conta { NomeCliente = "Cliente A", MesaId = mesa1.Id, GarcomId = garcom.Id, Situacao = SituacaoConta.Aberta });
+        repositorioConta.Cadastrar(new Conta { NomeCliente = "Cliente B", MesaId = mesa2.Id, GarcomId = garcom.Id, Situacao = SituacaoConta.Fechada });
+
+        List<Conta> todas = repositorioConta.SelecionarTodos();
+
+        Assert.AreEqual(2, todas.Count);
+    }
+
+    [TestMethod]
+    public void SelecionarPorId_DeveRetornarContaComSeusPedidosEValorTotal()
+    {
+        // CT-CTA-015
+        Mesa mesa = CriarMesa();
+        Garcom garcom = CriarGarcom();
+        Produto produto = new() { Nome = "Hambúrguer", Preco = 28m };
+        repositorioProduto.Cadastrar(produto);
+
+        Conta conta = new() { NomeCliente = "Carlos Andrade", MesaId = mesa.Id, GarcomId = garcom.Id };
+        repositorioConta.Cadastrar(conta);
+        repositorioPedido.Cadastrar(new Dominio.Modulos.ModuloPedido.Pedido { ContaId = conta.Id, ProdutoId = produto.Id, Quantidade = 2 });
+
+        Conta? contaCarregada = repositorioConta.SelecionarPorId(conta.Id);
+
+        Assert.IsNotNull(contaCarregada);
+        Assert.AreEqual("Carlos Andrade", contaCarregada.NomeCliente);
+        Assert.AreEqual(1, contaCarregada.Pedidos.Count);
+        Assert.AreEqual(56m, contaCarregada.ValorTotal);
+    }
+
+    [TestMethod]
+    public void Fechar_ComPedidosVinculados_NaoDeveBloquearEDevePreservarOHistorico()
+    {
+        // CT-CTA-016
+        Mesa mesa = CriarMesa();
+        Garcom garcom = CriarGarcom();
+        Produto produto = new() { Nome = "Hambúrguer", Preco = 28m };
+        repositorioProduto.Cadastrar(produto);
+
+        Conta conta = new() { NomeCliente = "Carlos Andrade", MesaId = mesa.Id, GarcomId = garcom.Id, Situacao = SituacaoConta.Aberta };
+        repositorioConta.Cadastrar(conta);
+        repositorioPedido.Cadastrar(new Dominio.Modulos.ModuloPedido.Pedido { ContaId = conta.Id, ProdutoId = produto.Id, Quantidade = 1 });
+
+        conta.Fechar();
+        repositorioConta.Editar(conta.Id, conta);
+
+        Conta? contaFechada = repositorioConta.SelecionarPorId(conta.Id);
+
+        Assert.IsNotNull(contaFechada);
+        Assert.AreEqual(SituacaoConta.Fechada, contaFechada.Situacao);
+        Assert.AreEqual(1, contaFechada.Pedidos.Count);
     }
 }

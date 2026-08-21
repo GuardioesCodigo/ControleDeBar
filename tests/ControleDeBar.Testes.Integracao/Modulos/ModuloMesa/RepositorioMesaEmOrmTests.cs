@@ -1,4 +1,5 @@
 using ControleDeBar.Dominio.Modulos.ModuloMesa;
+using ControleDeBar.Infra.Compartilhado.Orm;
 
 namespace ControleDeBar.Testes.Integracao.Modulos.ModuloMesa;
 

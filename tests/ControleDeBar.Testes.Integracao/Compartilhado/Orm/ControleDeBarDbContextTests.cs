@@ -1,4 +1,5 @@
 using ControleDeBar.Dominio.Modulos.ModuloMesa;
+using ControleDeBar.Infra.Compartilhado.Orm;
 using Microsoft.EntityFrameworkCore;
 
 namespace ControleDeBar.Testes.Integracao.Compartilhado.Orm;
@@ -19,7 +20,7 @@ public sealed class ControleDeBarDbContextTests : RepositorioBaseEmOrmTests
 
         contextoSemUsuario.Mesas.Add(new Mesa { Numero = 1, QuantidadeLugares = 4 });
 
-        Assert.ThrowsException<UnauthorizedAccessException>(() => contextoSemUsuario.SaveChanges());
+        Assert.ThrowsExactly<UnauthorizedAccessException>(() => contextoSemUsuario.SaveChanges());
     }
 
     [TestMethod]
@@ -39,6 +40,6 @@ public sealed class ControleDeBarDbContextTests : RepositorioBaseEmOrmTests
         contextoOutroEstabelecimento.Attach(mesaForjada);
         contextoOutroEstabelecimento.Entry(mesaForjada).State = EntityState.Modified;
 
-        Assert.ThrowsException<UnauthorizedAccessException>(() => contextoOutroEstabelecimento.SaveChanges());
+        Assert.ThrowsExactly<UnauthorizedAccessException>(() => contextoOutroEstabelecimento.SaveChanges());
     }
 }

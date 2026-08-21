@@ -31,6 +31,18 @@ public sealed class PedidoTests
     }
 
     [TestMethod]
+    public void Validar_DeveRetornarErros_QuandoCamposObrigatoriosEstaoEmBranco()
+    {
+        // CT-PED-002: conta e produto não informados (Guid.Empty por padrão)
+        Pedido pedido = new() { Quantidade = 1 };
+
+        List<string> erros = pedido.Validar();
+
+        Assert.IsTrue(erros.Any(e => e.Contains("Conta")));
+        Assert.IsTrue(erros.Any(e => e.Contains("Produto")));
+    }
+
+    [TestMethod]
     public void Subtotal_DeveSerPrecoDoProdutoMultiplicadoPelaQuantidade()
     {
         // CT-PED-010

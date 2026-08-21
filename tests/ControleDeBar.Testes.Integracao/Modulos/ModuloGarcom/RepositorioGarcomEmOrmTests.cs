@@ -1,6 +1,7 @@
 using ControleDeBar.Dominio.Modulos.ModuloConta;
 using ControleDeBar.Dominio.Modulos.ModuloGarcom;
 using ControleDeBar.Dominio.Modulos.ModuloMesa;
+using ControleDeBar.Infra.Compartilhado.Orm;
 
 namespace ControleDeBar.Testes.Integracao.Modulos.ModuloGarcom;
 
@@ -40,5 +41,26 @@ public sealed class RepositorioGarcomEmOrmTests : Compartilhado.Orm.RepositorioB
         bool possuiVinculo = repositorioGarcom.PossuiContaAbertaVinculada(garcom.Id);
 
         Assert.IsFalse(possuiVinculo);
+    }
+
+    [TestMethod]
+    public void SelecionarTodos_NaoDeveRetornarGarconsDeOutroEstabelecimento()
+    {
+        // CT-GAR-005
+        repositorioGarcom.Cadastrar(new Garcom { Nome = "João Silva" });
+
+        using ControleDeBarDbContext contextoOutroEstabelecimento =
+            CriarContextoParaOutroEstabelecimento(out Guid outroUserId);
+
+        Infra.Modulos.ModuloGarcom.RepositorioGarcomEmOrm repositorioGarcomOutro = new(contextoOutroEstabelecimento);
+        repositorioGarcomOutro.Cadastrar(new Garcom { Nome = "Maria Souza" });
+
+        List<Garcom> garconsDoEstabelecimentoOriginal = repositorioGarcom.SelecionarTodos();
+        List<Garcom> garconsDoOutroEstabelecimento = repositorioGarcomOutro.SelecionarTodos();
+
+        Assert.AreEqual(1, garconsDoEstabelecimentoOriginal.Count);
+        Assert.AreEqual(1, garconsDoOutroEstabelecimento.Count);
+        Assert.AreEqual("João Silva", garconsDoEstabelecimentoOriginal[0].Nome);
+        Assert.AreEqual("Maria Souza", garconsDoOutroEstabelecimento[0].Nome);
     }
 }

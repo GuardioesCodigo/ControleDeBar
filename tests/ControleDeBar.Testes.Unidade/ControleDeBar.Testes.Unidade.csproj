@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="../../src/ControleDeBar.Aplicacao/ControleDeBar.Aplicacao.csproj" />
     <ProjectReference Include="../../src/ControleDeBar.Dominio/ControleDeBar.Dominio.csproj" />
+    <ProjectReference Include="../../src/ControleDeBar.WebApp/ControleDeBar.WebApp.csproj" />
   </ItemGroup>
 
   <ItemGroup>

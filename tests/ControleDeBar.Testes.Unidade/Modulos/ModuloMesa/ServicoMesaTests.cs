@@ -71,4 +71,49 @@ public sealed class ServicoMesaTests
         Assert.IsTrue(resultado.IsSuccess);
         repositorioMesaMock.Verify(r => r.Excluir(mesa.Id), Times.Once);
     }
+
+    [TestMethod]
+    public void SelecionarTodos_DeveRetornarTodasAsMesasOrdenadasPorNumero()
+    {
+        // CT-MSA-007
+        repositorioMesaMock.Setup(r => r.SelecionarTodos()).Returns(
+        [
+            new Mesa { Numero = 3, QuantidadeLugares = 2 },
+            new Mesa { Numero = 1, QuantidadeLugares = 4 }
+        ]);
+
+        List<ListarMesaDto> mesas = servicoMesa.SelecionarTodos();
+
+        Assert.AreEqual(2, mesas.Count);
+        Assert.AreEqual(1, mesas[0].Numero);
+        Assert.AreEqual(3, mesas[1].Numero);
+    }
+
+    [TestMethod]
+    public void Editar_DeveFalhar_QuandoNovoNumeroJaPertenceAOutraMesa()
+    {
+        // CT-MSA-011
+        Mesa mesa = new() { Numero = 5, QuantidadeLugares = 4 };
+        repositorioMesaMock.Setup(r => r.SelecionarPorId(mesa.Id)).Returns(mesa);
+        repositorioMesaMock.Setup(r => r.NumeroJaExiste(6, mesa.Id)).Returns(true);
+
+        Result resultado = servicoMesa.Editar(new EditarMesaDto(mesa.Id, 6, 4, StatusMesa.Livre));
+
+        Assert.IsTrue(resultado.IsFailed);
+        repositorioMesaMock.Verify(r => r.Editar(It.IsAny<Guid>(), It.IsAny<Mesa>()), Times.Never);
+    }
+
+    [TestMethod]
+    public void SelecionarPorId_DeveRetornarDadosDaMesa_QuandoExiste()
+    {
+        // CT-MSA-014
+        Mesa mesa = new() { Numero = 7, QuantidadeLugares = 6, Status = StatusMesa.Ocupada };
+        repositorioMesaMock.Setup(r => r.SelecionarPorId(mesa.Id)).Returns(mesa);
+
+        Result<DetalhesMesaDto> resultado = servicoMesa.SelecionarPorId(mesa.Id);
+
+        Assert.IsTrue(resultado.IsSuccess);
+        Assert.AreEqual(7, resultado.Value.Numero);
+        Assert.AreEqual(StatusMesa.Ocupada, resultado.Value.Status);
+    }
 }

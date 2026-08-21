@@ -28,6 +28,18 @@ public sealed class MesaTests
     }
 
     [TestMethod]
+    public void Validar_DeveRetornarErros_QuandoCamposObrigatoriosEstaoEmBranco()
+    {
+        // CT-MSA-002: número e quantidade de lugares não preenchidos (valores padrão)
+        Mesa mesa = new();
+
+        List<string> erros = mesa.Validar();
+
+        Assert.IsTrue(erros.Any(e => e.Contains("Número")));
+        Assert.IsTrue(erros.Any(e => e.Contains("Quantidade de Lugares")));
+    }
+
+    [TestMethod]
     public void Validar_DeveRetornarErro_QuandoQuantidadeDeLugaresForZero()
     {
         // CT-MSA-006

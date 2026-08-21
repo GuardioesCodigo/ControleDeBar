@@ -19,16 +19,20 @@ public sealed class IsolamentoEntreEstabelecimentosTests : E2ETestsBase
         await Page.FillAsync("#Senha", "SenhaForte@123");
         await Page.FillAsync("#ConfirmarSenha", "SenhaForte@123");
         await Page.FillAsync("#NomeEstabelecimento", "Bar do Zé");
-        await Page.ClickAsync("button[type=submit]");
+        await Page.ClickAsync("button:has-text('Criar Conta')");
         await Page.WaitForURLAsync(url => !url.Contains("Registrar"));
 
         await Page.GotoAsync($"{UrlBase}/Mesa/Cadastrar");
         await Page.FillAsync("#Numero", "10");
         await Page.FillAsync("#QuantidadeLugares", "4");
-        await Page.ClickAsync("button[type=submit]");
+        await Page.ClickAsync("button:has-text('Cadastrar')");
         await Page.WaitForURLAsync(url => url.Contains("/Mesa/Listar"));
 
-        await Page.ClickAsync("text=Sair");
+        // O botão "Sair" fica dentro de um dropdown Bootstrap (escondido até
+        // o toggle ser clicado) - é preciso abrir o menu antes de clicar nele.
+        await Page.ClickAsync("button.dropdown-toggle");
+        await Page.ClickAsync("button:has-text('Sair')");
+        await Page.WaitForURLAsync(url => url.Contains("/Autenticacao/Entrar") || url.EndsWith("/"));
 
         // Estabelecimento 2: nunca cadastrou mesas
         await Page.GotoAsync($"{UrlBase}/Autenticacao/Registrar");
@@ -36,7 +40,7 @@ public sealed class IsolamentoEntreEstabelecimentosTests : E2ETestsBase
         await Page.FillAsync("#Senha", "SenhaForte@123");
         await Page.FillAsync("#ConfirmarSenha", "SenhaForte@123");
         await Page.FillAsync("#NomeEstabelecimento", "Boteco do Chico");
-        await Page.ClickAsync("button[type=submit]");
+        await Page.ClickAsync("button:has-text('Criar Conta')");
         await Page.WaitForURLAsync(url => !url.Contains("Registrar"));
 
         await Page.GotoAsync($"{UrlBase}/Mesa/Listar");

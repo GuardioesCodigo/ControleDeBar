@@ -5,6 +5,6 @@
     <Project Path="src/ControleDeBar.WebApp/ControleDeBar.WebApp.csproj" />
   </Folder>
   <Folder Name="/src/ControleDeBar.Aplicacao/">
-    <Project Path="src/ControleDeBar.Aplicacao/ControleDeBarAplicacao.csproj" />
+    <Project Path="src/ControleDeBar.Aplicacao/ControleDeBar.Aplicacao.csproj" />
   </Folder>
 </Solution>

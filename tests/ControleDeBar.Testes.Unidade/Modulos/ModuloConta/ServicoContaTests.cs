@@ -126,4 +126,61 @@ public sealed class ServicoContaTests
         Assert.AreEqual(SituacaoConta.Fechada, contaAberta.Situacao);
         repositorioContaMock.Verify(r => r.Editar(contaAberta.Id, It.IsAny<Conta>()), Times.Once);
     }
+
+    [TestMethod]
+    public void Editar_DeveAtualizarNomeDoCliente_QuandoContaEstaAberta()
+    {
+        // CT-CTA-010
+        Guid mesaId = Guid.NewGuid();
+        Guid garcomId = Guid.NewGuid();
+
+        Conta contaAberta = new()
+        {
+            NomeCliente = "Carlos Andrade",
+            MesaId = mesaId,
+            GarcomId = garcomId,
+            Situacao = SituacaoConta.Aberta
+        };
+
+        repositorioContaMock.Setup(r => r.SelecionarPorId(contaAberta.Id)).Returns(contaAberta);
+        repositorioMesaMock.Setup(r => r.SelecionarPorId(mesaId)).Returns(new Mesa { Numero = 3, QuantidadeLugares = 4 });
+        repositorioGarcomMock.Setup(r => r.SelecionarPorId(garcomId)).Returns(new Garcom { Nome = "João" });
+        repositorioContaMock.Setup(r => r.MesaPossuiContaAberta(mesaId, contaAberta.Id)).Returns(false);
+
+        Result resultado = servicoConta.Editar(new EditarContaDto(contaAberta.Id, "Carlos A. Andrade", mesaId, garcomId));
+
+        Assert.IsTrue(resultado.IsSuccess);
+        repositorioContaMock.Verify(r => r.Editar(
+            contaAberta.Id, It.Is<Conta>(c => c.NomeCliente == "Carlos A. Andrade")
+        ), Times.Once);
+    }
+
+    [TestMethod]
+    public void Editar_DeveTrocarAMesaVinculada_QuandoNovaMesaEstaLivre()
+    {
+        // CT-CTA-011
+        Guid mesaOriginalId = Guid.NewGuid();
+        Guid novaMesaId = Guid.NewGuid();
+        Guid garcomId = Guid.NewGuid();
+
+        Conta contaAberta = new()
+        {
+            NomeCliente = "Carlos Andrade",
+            MesaId = mesaOriginalId,
+            GarcomId = garcomId,
+            Situacao = SituacaoConta.Aberta
+        };
+
+        repositorioContaMock.Setup(r => r.SelecionarPorId(contaAberta.Id)).Returns(contaAberta);
+        repositorioMesaMock.Setup(r => r.SelecionarPorId(novaMesaId)).Returns(new Mesa { Numero = 8, QuantidadeLugares = 2 });
+        repositorioGarcomMock.Setup(r => r.SelecionarPorId(garcomId)).Returns(new Garcom { Nome = "João" });
+        repositorioContaMock.Setup(r => r.MesaPossuiContaAberta(novaMesaId, contaAberta.Id)).Returns(false);
+
+        Result resultado = servicoConta.Editar(new EditarContaDto(contaAberta.Id, "Carlos Andrade", novaMesaId, garcomId));
+
+        Assert.IsTrue(resultado.IsSuccess);
+        repositorioContaMock.Verify(r => r.Editar(
+            contaAberta.Id, It.Is<Conta>(c => c.MesaId == novaMesaId)
+        ), Times.Once);
+    }
 }

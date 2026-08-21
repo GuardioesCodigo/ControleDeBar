@@ -3,6 +3,7 @@ using ControleDeBar.Dominio.Modulos.ModuloGarcom;
 using ControleDeBar.Dominio.Modulos.ModuloMesa;
 using ControleDeBar.Dominio.Modulos.ModuloPedido;
 using ControleDeBar.Dominio.Modulos.ModuloProduto;
+using ControleDeBar.Infra.Compartilhado.Orm;
 
 namespace ControleDeBar.Testes.Integracao.Modulos.ModuloProduto;
 
@@ -42,5 +43,26 @@ public sealed class RepositorioProdutoEmOrmTests : Compartilhado.Orm.Repositorio
         bool possuiVinculo = repositorioProduto.PossuiPedidoVinculado(produto.Id);
 
         Assert.IsFalse(possuiVinculo);
+    }
+
+    [TestMethod]
+    public void SelecionarTodos_NaoDeveRetornarProdutosDeOutroEstabelecimento()
+    {
+        // CT-PRD-009
+        repositorioProduto.Cadastrar(new Produto { Nome = "Hambúrguer", Preco = 28m });
+
+        using ControleDeBarDbContext contextoOutroEstabelecimento =
+            CriarContextoParaOutroEstabelecimento(out _);
+
+        Infra.Modulos.ModuloProduto.RepositorioProdutoEmOrm repositorioProdutoOutro = new(contextoOutroEstabelecimento);
+        repositorioProdutoOutro.Cadastrar(new Produto { Nome = "Refrigerante", Preco = 6m });
+
+        List<Produto> produtosDoEstabelecimentoOriginal = repositorioProduto.SelecionarTodos();
+        List<Produto> produtosDoOutroEstabelecimento = repositorioProdutoOutro.SelecionarTodos();
+
+        Assert.AreEqual(1, produtosDoEstabelecimentoOriginal.Count);
+        Assert.AreEqual(1, produtosDoOutroEstabelecimento.Count);
+        Assert.AreEqual("Hambúrguer", produtosDoEstabelecimentoOriginal[0].Nome);
+        Assert.AreEqual("Refrigerante", produtosDoOutroEstabelecimento[0].Nome);
     }
 }

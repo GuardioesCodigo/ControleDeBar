@@ -16,7 +16,10 @@ public sealed class JornadaAtendimentoTests : E2ETestsBase
         await Page.FillAsync("#ConfirmarSenha", "SenhaForte@123");
         await Page.FillAsync("#NomeEstabelecimento", nomeEstabelecimento);
 
-        await Page.ClickAsync("button[type=submit]");
+        // Seletor por texto: "button[type=submit]" bateria também no botão
+        // "Sair" do menu do usuário (presente e no DOM, ainda que escondido
+        // dentro do dropdown Bootstrap), causando ambiguidade após o login.
+        await Page.ClickAsync("button:has-text('Criar Conta')");
 
         await Page.WaitForURLAsync(url => !url.Contains("Registrar"));
     }
@@ -34,20 +37,20 @@ public sealed class JornadaAtendimentoTests : E2ETestsBase
         await Page.GotoAsync($"{UrlBase}/Mesa/Cadastrar");
         await Page.FillAsync("#Numero", "1");
         await Page.FillAsync("#QuantidadeLugares", "4");
-        await Page.ClickAsync("button[type=submit]");
+        await Page.ClickAsync("button:has-text('Cadastrar')");
         await Page.WaitForURLAsync(url => url.Contains("/Mesa/Listar"));
 
         // Cadastrar garçom
         await Page.GotoAsync($"{UrlBase}/Garcom/Cadastrar");
         await Page.FillAsync("#Nome", "João Silva");
-        await Page.ClickAsync("button[type=submit]");
+        await Page.ClickAsync("button:has-text('Cadastrar')");
         await Page.WaitForURLAsync(url => url.Contains("/Garcom/Listar"));
 
         // Cadastrar produto
         await Page.GotoAsync($"{UrlBase}/Produto/Cadastrar");
         await Page.FillAsync("#Nome", "Hambúrguer");
         await Page.FillAsync("#Preco", "28");
-        await Page.ClickAsync("button[type=submit]");
+        await Page.ClickAsync("button:has-text('Cadastrar')");
         await Page.WaitForURLAsync(url => url.Contains("/Produto/Listar"));
 
         // Abrir conta
@@ -55,7 +58,7 @@ public sealed class JornadaAtendimentoTests : E2ETestsBase
         await Page.FillAsync("#NomeCliente", "Carlos Andrade");
         await Page.SelectOptionAsync("#MesaId", new SelectOptionValue { Label = "Mesa 1" });
         await Page.SelectOptionAsync("#GarcomId", new SelectOptionValue { Label = "João Silva" });
-        await Page.ClickAsync("button[type=submit]");
+        await Page.ClickAsync("button:has-text('Abrir Conta')");
         await Page.WaitForURLAsync(url => url.Contains("/Conta/Listar"));
 
         // Acessar a conta recém-aberta

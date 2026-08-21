@@ -27,6 +27,17 @@ public sealed class ProdutoTests
         Assert.IsTrue(erros.Any(e => e.Contains("Nome")));
     }
 
+    [TestMethod]
+    public void Validar_DeveRetornarErro_QuandoPrecoNaoEInformado()
+    {
+        // CT-PRD-003: sem informar o preço, o valor padrão de decimal é 0
+        Produto produto = new() { Nome = "Refrigerante" };
+
+        List<string> erros = produto.Validar();
+
+        Assert.IsTrue(erros.Any(e => e.Contains("Preço")));
+    }
+
     [DataTestMethod]
     [DataRow(0.0)]
     [DataRow(-5.0)]

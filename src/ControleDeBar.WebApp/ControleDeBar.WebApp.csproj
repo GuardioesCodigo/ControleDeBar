@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../ControleDeBar.Aplicacao/ControleDeBarAplicacao.csproj" />
+    <ProjectReference Include="../ControleDeBar.Aplicacao/ControleDeBar.Aplicacao.csproj" />
     <ProjectReference Include="../ControleDeBar.Infra/ControleDeBar.Infra.csproj" />
   </ItemGroup>
 
