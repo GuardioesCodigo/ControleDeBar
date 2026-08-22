@@ -66,6 +66,48 @@ namespace ControleDeBar.Infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TBGarcom",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TBGarcom", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TBMesa",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Numero = table.Column<int>(type: "int", nullable: false),
+                    QuantidadeLugares = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TBMesa", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TBProduto",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Preco = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TBProduto", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -172,66 +214,6 @@ namespace ControleDeBar.Infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TBGarcom",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    EstabelecimentoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TBGarcom", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TBGarcom_TBEstabelecimento",
-                        column: x => x.EstabelecimentoId,
-                        principalTable: "TBEstabelecimento",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TBMesa",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Numero = table.Column<int>(type: "int", nullable: false),
-                    QuantidadeLugares = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    EstabelecimentoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TBMesa", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TBMesa_TBEstabelecimento",
-                        column: x => x.EstabelecimentoId,
-                        principalTable: "TBEstabelecimento",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TBProduto",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Preco = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    EstabelecimentoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TBProduto", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TBProduto_TBEstabelecimento",
-                        column: x => x.EstabelecimentoId,
-                        principalTable: "TBEstabelecimento",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "TBConta",
                 columns: table => new
                 {
@@ -240,7 +222,8 @@ namespace ControleDeBar.Infra.Migrations
                     MesaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     GarcomId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DataAbertura = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Situacao = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                    Situacao = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -266,7 +249,8 @@ namespace ControleDeBar.Infra.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ContaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProdutoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Quantidade = table.Column<int>(type: "int", nullable: false)
+                    Quantidade = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -335,20 +319,20 @@ namespace ControleDeBar.Infra.Migrations
                 column: "MesaId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TBConta_UserId_Situacao",
+                table: "TBConta",
+                columns: new[] { "UserId", "Situacao" });
+
+            migrationBuilder.CreateIndex(
                 name: "UQ_TBEstabelecimento_UserId",
                 table: "TBEstabelecimento",
                 column: "UserId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_TBGarcom_EstabelecimentoId",
-                table: "TBGarcom",
-                column: "EstabelecimentoId");
-
-            migrationBuilder.CreateIndex(
-                name: "UQ_TBMesa_EstabelecimentoId_Numero",
+                name: "UQ_TBMesa_UserId_Numero",
                 table: "TBMesa",
-                columns: new[] { "EstabelecimentoId", "Numero" },
+                columns: new[] { "UserId", "Numero" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -360,11 +344,6 @@ namespace ControleDeBar.Infra.Migrations
                 name: "IX_TBPedido_ProdutoId",
                 table: "TBPedido",
                 column: "ProdutoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TBProduto_EstabelecimentoId",
-                table: "TBProduto",
-                column: "EstabelecimentoId");
         }
 
         /// <inheritdoc />
@@ -386,6 +365,9 @@ namespace ControleDeBar.Infra.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "TBEstabelecimento");
+
+            migrationBuilder.DropTable(
                 name: "TBPedido");
 
             migrationBuilder.DropTable(
@@ -405,9 +387,6 @@ namespace ControleDeBar.Infra.Migrations
 
             migrationBuilder.DropTable(
                 name: "TBMesa");
-
-            migrationBuilder.DropTable(
-                name: "TBEstabelecimento");
         }
     }
 }
