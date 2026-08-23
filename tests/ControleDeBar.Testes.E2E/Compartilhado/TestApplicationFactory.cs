@@ -1,3 +1,4 @@
+using ControleDeBar.Dominio.Modulos.ModuloProduto;
 using ControleDeBar.Infra.Compartilhado.Orm;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -20,15 +21,18 @@ public sealed class TestApplicationFactory : WebApplicationFactory<Program>
     {
         nomeBanco = $"e2e-{Guid.NewGuid():N}";
 
-        // Definidas ANTES da criação do host: o Program.cs lê configuração
-        // (via AddInfraRepositories) antes mesmo do builder.Build() ser chamado,
-        // então overrides feitos em ConfigureWebHost/ConfigureAppConfiguration
-        // chegam tarde demais. Variáveis de ambiente são a fonte de configuração
-        // com maior prioridade e já estão disponíveis nesse ponto.
-        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Testing");
-        Environment.SetEnvironmentVariable("Infra__NewRelic__Enabled", "false");
+        // O Program.cs lê essas configurações durante a criação da aplicação.
+        // Por isso, elas precisam existir antes do host ser iniciado.
+        Environment.SetEnvironmentVariable(
+            "ASPNETCORE_ENVIRONMENT",
+            "Testing");
+
+        Environment.SetEnvironmentVariable(
+            "Infra__NewRelic__Enabled",
+            "false");
 
         UseKestrel(0);
+
         StartServer();
 
         UrlBase = ObterUrlKestrel();
@@ -40,24 +44,75 @@ public sealed class TestApplicationFactory : WebApplicationFactory<Program>
 
         builder.ConfigureServices(services =>
         {
+            // Remove a configuração original do DbContext.
             services.RemoveAll<DbContextOptions<ControleDeBarDbContext>>();
             services.RemoveAll<IDbContextOptionsConfiguration<ControleDeBarDbContext>>();
 
+            // Cada execução do E2E recebe seu próprio banco InMemory.
             services.AddDbContext<ControleDeBarDbContext>(options =>
             {
                 options.UseInMemoryDatabase(nomeBanco);
             });
+
+            // Cria um escopo para acessar o DbContext.
+            using var serviceProvider = services.BuildServiceProvider();
+            using var scope = serviceProvider.CreateScope();
+
+            var db = scope.ServiceProvider
+                .GetRequiredService<ControleDeBarDbContext>();
+
+            // Cria o banco.
+            db.Database.EnsureCreated();
+
+            // Popula os dados necessários para os testes E2E.
+            SeedDatabase(db);
         });
+    }
+
+    private static void SeedDatabase(ControleDeBarDbContext db)
+    {
+        // Evita inserir os mesmos dados mais de uma vez.
+        if (db.Produtos.Any())
+            return;
+
+        var produtos = new[]
+        {
+            new Produto
+            {
+                Nome = "Cerveja",
+                Preco = 10.00m
+            },
+
+            new Produto
+            {
+                Nome = "Refrigerante",
+                Preco = 8.00m
+            },
+
+            new Produto
+            {
+                Nome = "Batata Frita",
+                Preco = 15.00m
+            }
+        };
+
+        db.Produtos.AddRange(produtos);
+
+        db.SaveChanges();
     }
 
     private string ObterUrlKestrel()
     {
-        IServer servidor = Services.GetRequiredService<IServer>();
+        var servidor = Services.GetRequiredService<IServer>();
 
-        IServerAddressesFeature? enderecos = servidor.Features.Get<IServerAddressesFeature>();
+        var enderecos = servidor.Features
+            .Get<IServerAddressesFeature>();
 
         if (enderecos is null)
-            throw new InvalidOperationException("Não foi possível obter a URL do servidor");
+        {
+            throw new InvalidOperationException(
+                "Não foi possível obter a URL do servidor.");
+        }
 
         return enderecos.Addresses.Single();
     }
