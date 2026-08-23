@@ -1,11 +1,13 @@
-using ControleDeBar.Dominio.Modulos.ModuloProduto;
 using ControleDeBar.Infra.Compartilhado.Orm;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc.Testing;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -21,16 +23,17 @@ public sealed class TestApplicationFactory : WebApplicationFactory<Program>
     {
         nomeBanco = $"e2e-{Guid.NewGuid():N}";
 
-        // O Program.cs lê essas configurações durante a criação da aplicação.
-        // Por isso, elas precisam existir antes do host ser iniciado.
+        // Ambiente de testes.
         Environment.SetEnvironmentVariable(
             "ASPNETCORE_ENVIRONMENT",
             "Testing");
 
+        // Desabilita o New Relic durante os testes.
         Environment.SetEnvironmentVariable(
             "Infra__NewRelic__Enabled",
             "false");
 
+        // Kestrel em porta dinâmica.
         UseKestrel(0);
 
         StartServer();
@@ -45,60 +48,18 @@ public sealed class TestApplicationFactory : WebApplicationFactory<Program>
         builder.ConfigureServices(services =>
         {
             // Remove a configuração original do DbContext.
-            services.RemoveAll<DbContextOptions<ControleDeBarDbContext>>();
-            services.RemoveAll<IDbContextOptionsConfiguration<ControleDeBarDbContext>>();
+            services.RemoveAll<
+                DbContextOptions<ControleDeBarDbContext>>();
 
-            // Cada execução do E2E recebe seu próprio banco InMemory.
+            services.RemoveAll<
+                IDbContextOptionsConfiguration<ControleDeBarDbContext>>();
+
+            // Banco exclusivo para esta execução da Factory.
             services.AddDbContext<ControleDeBarDbContext>(options =>
             {
                 options.UseInMemoryDatabase(nomeBanco);
             });
-
-            // Cria um escopo para acessar o DbContext.
-            using var serviceProvider = services.BuildServiceProvider();
-            using var scope = serviceProvider.CreateScope();
-
-            var db = scope.ServiceProvider
-                .GetRequiredService<ControleDeBarDbContext>();
-
-            // Cria o banco.
-            db.Database.EnsureCreated();
-
-            // Popula os dados necessários para os testes E2E.
-            SeedDatabase(db);
         });
-    }
-
-    private static void SeedDatabase(ControleDeBarDbContext db)
-    {
-        // Evita inserir os mesmos dados mais de uma vez.
-        if (db.Produtos.Any())
-            return;
-
-        var produtos = new[]
-        {
-            new Produto
-            {
-                Nome = "Cerveja",
-                Preco = 10.00m
-            },
-
-            new Produto
-            {
-                Nome = "Refrigerante",
-                Preco = 8.00m
-            },
-
-            new Produto
-            {
-                Nome = "Batata Frita",
-                Preco = 15.00m
-            }
-        };
-
-        db.Produtos.AddRange(produtos);
-
-        db.SaveChanges();
     }
 
     private string ObterUrlKestrel()
