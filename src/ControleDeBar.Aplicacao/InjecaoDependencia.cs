@@ -3,6 +3,7 @@ using ControleDeBar.Aplicacao.Modulos.ModuloEstabelecimento;
 using ControleDeBar.Aplicacao.Modulos.ModuloFaturamento;
 using ControleDeBar.Aplicacao.Modulos.ModuloGarcom;
 using ControleDeBar.Aplicacao.Modulos.ModuloMesa;
+using ControleDeBar.Aplicacao.Modulos.ModuloPedido;
 using ControleDeBar.Aplicacao.Modulos.ModuloProduto;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,5 +23,6 @@ public static class InjecaoDependencia
         services.AddScoped<ServicoGarcom>();
         services.AddScoped<ServicoFaturamento>();
         services.AddScoped<ServicoEstabelecimento>();
+        services.AddScoped<ServicoPedido>();
     }
 }

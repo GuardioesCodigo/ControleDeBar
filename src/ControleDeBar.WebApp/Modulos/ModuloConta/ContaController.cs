@@ -76,9 +76,20 @@ public class ContaController(
             return RedirectToAction(nameof(Listar));
         }
 
-        EditarContaViewModel editarVm = mapeador.Map<EditarContaViewModel>(resultado.Value);
+        EditarContaViewModel editarVm =
+            mapeador.Map<EditarContaViewModel>(resultado.Value);
 
-        PreencherListasSelecao(editarVm.Mesas, editarVm.Garcons);
+        PreencherListasSelecao(
+            editarVm.Mesas,
+            editarVm.Garcons
+        );
+
+        ViewBag.Produtos = servicoProduto.SelecionarTodos()
+            .Select(p => new SelectListItem(
+                $"{p.Nome} ({p.Preco:C})",
+                p.Id.ToString()
+            ))
+            .ToList();
 
         return View(editarVm);
     }

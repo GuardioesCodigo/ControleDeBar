@@ -57,10 +57,20 @@ else
                         @if (c.Situacao == SituacaoConta.Aberta)
                         {
                             <a class="btn btn-outline-secondary btn-sm rounded-pill px-3"
-                               asp-action="Editar"
-                               asp-route-id="@c.Id">
+                            asp-action="Editar"
+                            asp-route-id="@c.Id">
                                 Editar
                             </a>
+
+                            <form asp-action="Fechar"
+                                asp-route-id="@c.Id"
+                                method="post"
+                                class="d-inline">
+                                <button type="submit"
+                                        class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                                    Fechar
+                                </button>
+                            </form>
                         }
                     </td>
                 </tr>

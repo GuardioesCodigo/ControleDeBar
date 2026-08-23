@@ -39,6 +39,7 @@ public record EditarContaViewModel(
 {
     public List<SelectListItem> Mesas { get; set; } = [];
     public List<SelectListItem> Garcons { get; set; } = [];
+    public List<ItemPedidoContaViewModel> Pedidos { get; set; } = [];
 }
 
 public record ItemPedidoViewModel(
@@ -57,4 +58,11 @@ public record VisualizarContaViewModel(
     SituacaoConta Situacao,
     List<ItemPedidoViewModel> Pedidos,
     decimal ValorTotal
+);
+
+public record ItemPedidoContaViewModel(
+    Guid Id,
+    string NomeProduto,
+    int Quantidade,
+    decimal Subtotal
 );

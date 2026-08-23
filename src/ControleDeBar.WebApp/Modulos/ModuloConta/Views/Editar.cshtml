@@ -1,4 +1,6 @@
 @using ControleDeBar.WebApp.Modulos.ModuloConta
+@using Microsoft.AspNetCore.Mvc.Rendering
+
 @{
     Layout = "_Layout";
 }
@@ -18,20 +20,131 @@
 
     <div class="mb-3">
         <label asp-for="MesaId" class="form-label">Mesa</label>
-        <select asp-for="MesaId" class="form-select" asp-items="Model.Mesas"></select>
+        <select asp-for="MesaId"
+                class="form-select"
+                asp-items="Model.Mesas">
+        </select>
         <span asp-validation-for="MesaId" class="text-danger small"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="GarcomId" class="form-label">Garçom</label>
-        <select asp-for="GarcomId" class="form-select" asp-items="Model.Garcons"></select>
+        <select asp-for="GarcomId"
+                class="form-select"
+                asp-items="Model.Garcons">
+        </select>
         <span asp-validation-for="GarcomId" class="text-danger small"></span>
     </div>
 
     <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
 
     <div class="d-flex gap-2 mt-4">
-        <button type="submit" class="btn btn-primary rounded-pill px-4">Salvar</button>
-        <a asp-action="Listar" class="btn btn-outline-secondary rounded-pill px-4">Cancelar</a>
+        <button type="submit"
+                class="btn btn-primary rounded-pill px-4">
+            Salvar
+        </button>
+
+        <a asp-action="Listar"
+           class="btn btn-outline-secondary rounded-pill px-4">
+            Cancelar
+        </a>
     </div>
 </form>
+
+<h5 class="mt-4 mb-3">Pedidos</h5>
+
+@if (Model.Pedidos.Count == 0)
+{
+    <div class="alert alert-primary border-start border-primary border-4 rounded-3">
+        Nenhum pedido lançado nesta conta ainda.
+    </div>
+}
+else
+{
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Subtotal</th>
+                <th class="text-end">Ações</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (ItemPedidoContaViewModel p in Model.Pedidos)
+            {
+                <tr>
+                    <td>@p.NomeProduto</td>
+                    <td>@p.Quantidade</td>
+                    <td>@p.Subtotal.ToString("C")</td>
+
+                    <td class="text-end">
+                        <form asp-controller="Pedido"
+                              asp-action="Remover"
+                              method="post"
+                              class="d-inline">
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@p.Id" />
+
+                            <input type="hidden"
+                                   name="contaId"
+                                   value="@Context.Request.RouteValues["id"]" />
+
+                            <button type="submit"
+                                    class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                                Remover
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div class="card border-0 shadow-sm p-4 mt-4"
+     style="max-width: 620px;">
+
+    <h6 class="mb-3">Adicionar Pedido</h6>
+
+    <form asp-controller="Pedido"
+          asp-action="Adicionar"
+          method="post"
+          class="row g-2 align-items-end">
+
+        <input type="hidden"
+               name="ContaId"
+               value="@Context.Request.RouteValues["id"]" />
+
+        <div class="col-7">
+            <label class="form-label small">Produto</label>
+
+            <select name="ProdutoId"
+                    class="form-select"
+                    asp-items="(IEnumerable<SelectListItem>)ViewBag.Produtos">
+
+                <option value="">Selecione</option>
+            </select>
+        </div>
+
+        <div class="col-3">
+            <label class="form-label small">Quantidade</label>
+
+            <input name="Quantidade"
+                   type="number"
+                   min="1"
+                   value="1"
+                   class="form-control" />
+        </div>
+
+        <div class="col-2">
+            <button type="submit"
+                    class="btn btn-primary rounded-pill w-100">
+                +
+            </button>
+        </div>
+    </form>
+</div>
