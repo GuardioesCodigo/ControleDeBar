@@ -70,7 +70,7 @@ jobs:
 
       - name: Apply ORM migrations to AzureSQL
         env:
-          AZURESQL_CONNECTION_STRING: ${{ secrets.AZURESQL_CONNECTION_STRING }}
+          AZURESQL_CONNECTION_STRING: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
           Infra__NewRelic__LicenseKey: ${{ secrets.NEWRELIC_LICENSE_KEY }}
         run: |
           dotnet ef database update `
@@ -103,10 +103,10 @@ jobs:
         shell: pwsh
         run: |
           az webapp config appsettings set `
-            --resource-group "<NOME_DO_RESOURCE_GROUP>" `
+            --resource-group "controle-de-bar-web" `
             --name "ControleDeBarWeb" `
             --settings `
-              "ConnectionStrings__SqlServerEF=${{ secrets.AZURESQL_CONNECTION_STRING }}" `
+              "ConnectionStrings__SqlServerEF=${{ secrets.AZURE_SQL_CONNECTION_STRING }}" `
               "Infra__NewRelic__LicenseKey=${{ secrets.NEWRELIC_LICENSE_KEY }}"
 
       - name: Deploy to Azure Web App
