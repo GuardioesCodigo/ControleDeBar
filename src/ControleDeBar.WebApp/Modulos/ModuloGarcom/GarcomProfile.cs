@@ -9,6 +9,7 @@ public class GarcomProfile : Profile
     {
         CreateMap<ListarGarcomDto, ListarGarcomViewModel>();
         CreateMap<CadastrarGarcomViewModel, CadastrarGarcomDto>();
+        CreateMap<EditarGarcomViewModel, EditarGarcomDto>();
         CreateMap<DetalhesGarcomDto, EditarGarcomViewModel>();
         CreateMap<DetalhesGarcomDto, ExcluirGarcomViewModel>();
     }

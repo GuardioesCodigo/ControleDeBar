@@ -8,22 +8,14 @@ public sealed class RepositorioMesaEmOrm(
     ControleDeBarDbContext dbContext
 ) : RepositorioBaseEmOrm<Mesa>(dbContext), IRepositorioMesa
 {
-    public bool NumeroJaExiste(
-        int numero,
-        Guid estabelecimentoId,
-        Guid? idIgnorado = null
-    )
+    public bool NumeroJaExiste(int numero, Guid? idIgnorado = null)
     {
-        return registros.Any(m =>
-            m.EstabelecimentoId == estabelecimentoId &&
-            m.Numero == numero &&
-            m.Id != idIgnorado);
+        return registros.Any(m => m.Numero == numero && m.Id != idIgnorado);
     }
 
     public bool PossuiContaAbertaVinculada(Guid idMesa)
     {
         return dbContext.Set<Conta>()
-            .Any(c => c.MesaId == idMesa &&
-                      c.Situacao == SituacaoConta.Aberta);
+            .Any(c => c.MesaId == idMesa && c.Situacao == SituacaoConta.Aberta);
     }
 }

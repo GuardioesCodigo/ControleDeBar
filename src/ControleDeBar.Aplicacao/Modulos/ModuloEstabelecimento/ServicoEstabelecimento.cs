@@ -1,24 +1,20 @@
 using ControleDeBar.Aplicacao.Compartilhado;
-using ControleDeBar.Dominio.Compartilhado.Identity;
 using ControleDeBar.Dominio.Modulos.ModuloEstabelecimento;
 using FluentResults;
 
 namespace ControleDeBar.Aplicacao.Modulos.ModuloEstabelecimento;
 
 public sealed class ServicoEstabelecimento(
-    IRepositorioEstabelecimento repositorioEstabelecimento,
-    IProvedorDeUsuario provedorDeUsuario
+    IRepositorioEstabelecimento repositorioEstabelecimento
 ) : ServicoBase<Estabelecimento>
 {
+    // Chamado logo após o cadastro do usuário no Identity (ver AutenticacaoController).
+    // Cada usuário nasce vinculado a exatamente um estabelecimento.
     public Result Cadastrar(string nome)
     {
-        if (!provedorDeUsuario.EstaAutenticado || provedorDeUsuario.Id is null)
-            return Falha(string.Empty, "Usuário não autenticado.");
-
         Estabelecimento estabelecimento = new()
         {
-            Nome = nome,
-            UserId = provedorDeUsuario.Id.Value
+            Nome = nome
         };
 
         Result resultadoValidacao = ValidarEntidade(estabelecimento);
@@ -33,8 +29,7 @@ public sealed class ServicoEstabelecimento(
 
     public Result Editar(EditarEstabelecimentoDto dto)
     {
-        Estabelecimento? estabelecimento =
-            repositorioEstabelecimento.SelecionarDoUsuarioAtual();
+        Estabelecimento? estabelecimento = repositorioEstabelecimento.SelecionarDoUsuarioAtual();
 
         if (estabelecimento == null)
             return Falha(string.Empty, "Estabelecimento não encontrado.");
@@ -57,8 +52,7 @@ public sealed class ServicoEstabelecimento(
 
     public Result<DetalhesEstabelecimentoDto> SelecionarAtual()
     {
-        Estabelecimento? estabelecimento =
-            repositorioEstabelecimento.SelecionarDoUsuarioAtual();
+        Estabelecimento? estabelecimento = repositorioEstabelecimento.SelecionarDoUsuarioAtual();
 
         if (estabelecimento == null)
             return Result.Fail("Estabelecimento não encontrado.");

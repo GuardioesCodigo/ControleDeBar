@@ -1,9 +1,9 @@
-@using ControleDeBar.WebApp.Modulos.ModuloEstabelecimento
 @{
     Layout = "_Layout";
+    ViewBag.Titulo = "Meu Estabelecimento";
 }
 
-@model DetalhesEstabelecimentoViewModel
+@model VisualizarEstabelecimentoViewModel
 
 <div class="card border-0 shadow-sm mx-auto p-4" style="max-width: 620px;">
     <dl class="row mb-0">
@@ -14,10 +14,8 @@
         <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Endereco) ? "-" : Model.Endereco)</dd>
 
         <dt class="col-sm-4 text-muted small text-uppercase">Cadastrado em</dt>
-        <dd class="col-sm-8">@Model.DataCriacao.ToString(format: "dd/MM/yyyy")</dd>
+        <dd class="col-sm-8">@Model.DataCriacao.ToString("dd/MM/yyyy")</dd>
     </dl>
 
-    <a class="btn btn-primary rounded-pill mt-3 align-self-end" asp-controller="Estabelecimento" asp-action="Editar">Editar Estabelecimento</a>
-
-    <a class="btn btn-primary rounded-pill mt-3 align-self-end" asp-controller="Estabelecimento" asp-action="Cadastrar" class="btn btn-primary">Cadastrar estabelecimento</a>
+    <a class="btn btn-primary rounded-pill mt-3 align-self-end" asp-action="Editar">Editar Estabelecimento</a>
 </div>

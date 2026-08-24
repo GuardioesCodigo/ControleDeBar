@@ -1,11 +1,13 @@
-@using ControleDeBar.WebApp.Modulos.ModuloGarcom
 @{
     Layout = "_Layout";
+    ViewBag.Titulo = "Editar Garçom";
 }
 
-@model EditarGarcomViewModel
+@model EditarGarcomViewModel;
 
-<form asp-action="Editar" asp-route-id="@(Context.Request.RouteValues["id"])" method="post" class="col-12 col-md-6">
+<form asp-action="Editar" method="post" class="col-12 col-md-6">
+    <input asp-for="Id" type="hidden" />
+
     <div class="mb-3">
         <label asp-for="Nome" class="form-label">Nome</label>
         <input asp-for="Nome" class="form-control" />

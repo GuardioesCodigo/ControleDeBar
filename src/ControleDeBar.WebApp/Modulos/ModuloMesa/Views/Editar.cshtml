@@ -1,15 +1,12 @@
-@using ControleDeBar.Dominio.Modulos.ModuloMesa
-@using ControleDeBar.WebApp.Modulos.ModuloMesa
 @{
     Layout = "_Layout";
+    ViewBag.Titulo = "Editar Mesa";
 }
 
-@model EditarMesaViewModel
+@model EditarMesaViewModel;
 
-<form asp-action="Editar"
-      asp-route-id="@Context.Request.RouteValues["id"]"
-      method="post"
-      class="col-12 col-md-6">
+<form asp-action="Editar" method="post" class="col-12 col-md-6">
+    <input asp-for="Id" type="hidden" />
 
     <div class="mb-3">
         <label asp-for="Numero" class="form-label">Número</label>
@@ -25,10 +22,7 @@
 
     <div class="mb-3">
         <label asp-for="Status" class="form-label">Status</label>
-        <select asp-for="Status"
-                class="form-select"
-                asp-items="Html.GetEnumSelectList<StatusMesa>()">
-        </select>
+        <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<StatusMesa>()"></select>
     </div>
 
     <div asp-validation-summary="ModelOnly" class="text-danger small"></div>

@@ -95,7 +95,7 @@ public class ContaController(
     }
 
     [HttpPost]
-    public ActionResult Editar(Guid id, EditarContaViewModel editarVm)
+    public ActionResult Editar(EditarContaViewModel editarVm)
     {
         if (!ModelState.IsValid)
         {
@@ -104,12 +104,7 @@ public class ContaController(
             return View(editarVm);
         }
 
-        EditarContaDto dto = new(
-            id,
-            editarVm.NomeCliente,
-            editarVm.MesaId,
-            editarVm.GarcomId
-        );
+        EditarContaDto dto = mapeador.Map<EditarContaDto>(editarVm);
 
         Result resultado = servicoConta.Editar(dto);
 
@@ -124,7 +119,7 @@ public class ContaController(
 
         return RedirectToAction(nameof(Listar));
     }
-    
+
     [HttpGet]
     public ActionResult Visualizar(Guid id)
     {

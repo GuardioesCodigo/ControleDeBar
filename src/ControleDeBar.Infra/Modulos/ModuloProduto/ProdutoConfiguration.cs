@@ -23,11 +23,5 @@ public sealed class ProdutoConfiguration : IEntityTypeConfiguration<Produto>
         builder.Property(p => p.Preco)
             .HasColumnType("decimal(10,2)")
             .IsRequired();
-
-        builder.HasOne(p => p.Estabelecimento)
-            .WithMany()
-            .HasForeignKey(p => p.EstabelecimentoId)
-            .HasConstraintName("FK_TBProduto_TBEstabelecimento")
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }

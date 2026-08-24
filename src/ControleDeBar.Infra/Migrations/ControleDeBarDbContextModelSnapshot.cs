@@ -46,12 +46,18 @@ namespace ControleDeBar.Infra.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id")
                         .HasName("PK_TBConta");
 
                     b.HasIndex("GarcomId");
 
                     b.HasIndex("MesaId");
+
+                    b.HasIndex("UserId", "Situacao")
+                        .HasDatabaseName("IX_TBConta_UserId_Situacao");
 
                     b.ToTable("TBConta", (string)null);
                 });
@@ -91,18 +97,16 @@ namespace ControleDeBar.Infra.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("EstabelecimentoId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id")
                         .HasName("PK_TBGarcom");
-
-                    b.HasIndex("EstabelecimentoId");
 
                     b.ToTable("TBGarcom", (string)null);
                 });
@@ -110,9 +114,6 @@ namespace ControleDeBar.Infra.Migrations
             modelBuilder.Entity("ControleDeBar.Dominio.Modulos.ModuloMesa.Mesa", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("EstabelecimentoId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Numero")
@@ -126,12 +127,15 @@ namespace ControleDeBar.Infra.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id")
                         .HasName("PK_TBMesa");
 
-                    b.HasIndex("EstabelecimentoId", "Numero")
+                    b.HasIndex("UserId", "Numero")
                         .IsUnique()
-                        .HasDatabaseName("UQ_TBMesa_EstabelecimentoId_Numero");
+                        .HasDatabaseName("UQ_TBMesa_UserId_Numero");
 
                     b.ToTable("TBMesa", (string)null);
                 });
@@ -150,6 +154,9 @@ namespace ControleDeBar.Infra.Migrations
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id")
                         .HasName("PK_TBPedido");
 
@@ -165,9 +172,6 @@ namespace ControleDeBar.Infra.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("EstabelecimentoId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -176,10 +180,11 @@ namespace ControleDeBar.Infra.Migrations
                     b.Property<decimal>("Preco")
                         .HasColumnType("decimal(10,2)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id")
                         .HasName("PK_TBProduto");
-
-                    b.HasIndex("EstabelecimentoId");
 
                     b.ToTable("TBProduto", (string)null);
                 });
@@ -402,30 +407,6 @@ namespace ControleDeBar.Infra.Migrations
                     b.Navigation("Mesa");
                 });
 
-            modelBuilder.Entity("ControleDeBar.Dominio.Modulos.ModuloGarcom.Garcom", b =>
-                {
-                    b.HasOne("ControleDeBar.Dominio.Modulos.ModuloEstabelecimento.Estabelecimento", "Estabelecimento")
-                        .WithMany()
-                        .HasForeignKey("EstabelecimentoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_TBGarcom_TBEstabelecimento");
-
-                    b.Navigation("Estabelecimento");
-                });
-
-            modelBuilder.Entity("ControleDeBar.Dominio.Modulos.ModuloMesa.Mesa", b =>
-                {
-                    b.HasOne("ControleDeBar.Dominio.Modulos.ModuloEstabelecimento.Estabelecimento", "Estabelecimento")
-                        .WithMany()
-                        .HasForeignKey("EstabelecimentoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_TBMesa_TBEstabelecimento");
-
-                    b.Navigation("Estabelecimento");
-                });
-
             modelBuilder.Entity("ControleDeBar.Dominio.Modulos.ModuloPedido.Pedido", b =>
                 {
                     b.HasOne("ControleDeBar.Dominio.Modulos.ModuloConta.Conta", null)
@@ -443,18 +424,6 @@ namespace ControleDeBar.Infra.Migrations
                         .HasConstraintName("FK_TBPedido_TBProduto");
 
                     b.Navigation("Produto");
-                });
-
-            modelBuilder.Entity("ControleDeBar.Dominio.Modulos.ModuloProduto.Produto", b =>
-                {
-                    b.HasOne("ControleDeBar.Dominio.Modulos.ModuloEstabelecimento.Estabelecimento", "Estabelecimento")
-                        .WithMany()
-                        .HasForeignKey("EstabelecimentoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_TBProduto_TBEstabelecimento");
-
-                    b.Navigation("Estabelecimento");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

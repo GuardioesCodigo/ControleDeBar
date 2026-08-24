@@ -65,12 +65,12 @@ public class GarcomController(
     }
 
     [HttpPost]
-    public ActionResult Editar(Guid id, EditarGarcomViewModel editarVm)
+    public ActionResult Editar(EditarGarcomViewModel editarVm)
     {
         if (!ModelState.IsValid)
             return View(editarVm);
 
-        EditarGarcomDto dto = new(id, editarVm.Nome);
+        EditarGarcomDto dto = mapeador.Map<EditarGarcomDto>(editarVm);
 
         Result resultado = servicoGarcom.Editar(dto);
 

@@ -1,19 +1,14 @@
-using ControleDeBar.Dominio.Compartilhado.Identity;
-using ControleDeBar.Dominio.Modulos.ModuloEstabelecimento;
 using ControleDeBar.Infra.Compartilhado.Orm;
+using ControleDeBar.Dominio.Modulos.ModuloEstabelecimento;
 
 namespace ControleDeBar.Infra.Modulos.ModuloEstabelecimento;
 
 public sealed class RepositorioEstabelecimentoEmOrm(
-    ControleDeBarDbContext dbContext,
-    IProvedorDeUsuario provedorDeUsuario
+    ControleDeBarDbContext dbContext
 ) : RepositorioBaseEmOrm<Estabelecimento>(dbContext), IRepositorioEstabelecimento
 {
     public Estabelecimento? SelecionarDoUsuarioAtual()
     {
-        if (!provedorDeUsuario.EstaAutenticado || provedorDeUsuario.Id is null)
-            return null;
-
-        return registros.SingleOrDefault(e => e.UserId == provedorDeUsuario.Id);
+        return registros.SingleOrDefault();
     }
 }

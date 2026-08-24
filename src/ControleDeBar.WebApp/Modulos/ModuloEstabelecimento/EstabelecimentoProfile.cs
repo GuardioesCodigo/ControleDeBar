@@ -7,7 +7,7 @@ public class EstabelecimentoProfile : Profile
 {
     public EstabelecimentoProfile()
     {
-        CreateMap<DetalhesEstabelecimentoDto, DetalhesEstabelecimentoViewModel>();
+        CreateMap<DetalhesEstabelecimentoDto, VisualizarEstabelecimentoViewModel>();
         CreateMap<DetalhesEstabelecimentoDto, EditarEstabelecimentoViewModel>();
         CreateMap<EditarEstabelecimentoViewModel, EditarEstabelecimentoDto>();
     }

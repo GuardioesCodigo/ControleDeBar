@@ -1,6 +1,5 @@
 using ControleDeBar.Aplicacao.Compartilhado;
 using ControleDeBar.Dominio.Modulos.ModuloConta;
-using ControleDeBar.Dominio.Modulos.ModuloEstabelecimento;
 using ControleDeBar.Dominio.Modulos.ModuloPedido;
 using ControleDeBar.Dominio.Modulos.ModuloProduto;
 using FluentResults;
@@ -10,32 +9,22 @@ namespace ControleDeBar.Aplicacao.Modulos.ModuloPedido;
 public sealed class ServicoPedido(
     IRepositorioPedido repositorioPedido,
     IRepositorioConta repositorioConta,
-    IRepositorioProduto repositorioProduto,
-    IRepositorioEstabelecimento repositorioEstabelecimento
+    IRepositorioProduto repositorioProduto
 ) : ServicoBase<Pedido>
 {
     public Result Registrar(CadastrarPedidoDto dto)
     {
-        Estabelecimento? estabelecimento =
-            repositorioEstabelecimento.SelecionarDoUsuarioAtual();
-
-        if (estabelecimento == null)
-            return Falha(string.Empty, "Estabelecimento não encontrado.");
-
         Conta? conta = repositorioConta.SelecionarPorId(dto.ContaId);
 
-        if (conta == null || conta.Mesa.EstabelecimentoId != estabelecimento.Id)
+        if (conta == null)
             return Falha(nameof(dto.ContaId), "Conta não encontrada.");
 
         if (conta.Situacao == SituacaoConta.Fechada)
-            return Falha(
-                string.Empty,
-                "Não é possível registrar pedidos em uma conta fechada."
-            );
+            return Falha(string.Empty, "Não é possível registrar pedidos em uma conta fechada.");
 
         Produto? produto = repositorioProduto.SelecionarPorId(dto.ProdutoId);
 
-        if (produto == null || produto.EstabelecimentoId != estabelecimento.Id)
+        if (produto == null)
             return Falha(nameof(dto.ProdutoId), "Produto não encontrado.");
 
         Pedido pedido = new()
@@ -57,16 +46,9 @@ public sealed class ServicoPedido(
 
     public Result Remover(Guid id)
     {
-        Estabelecimento? estabelecimento =
-            repositorioEstabelecimento.SelecionarDoUsuarioAtual();
-
-        if (estabelecimento == null)
-            return Falha(string.Empty, "Estabelecimento não encontrado.");
-
         Pedido? pedido = repositorioPedido.SelecionarPorId(id);
 
-        if (pedido == null ||
-            pedido.Produto.EstabelecimentoId != estabelecimento.Id)
+        if (pedido == null)
             return Falha(string.Empty, "Pedido não encontrado.");
 
         repositorioPedido.Excluir(id);
@@ -74,29 +56,11 @@ public sealed class ServicoPedido(
         return Result.Ok();
     }
 
-    public Result<List<ListarPedidoDto>> SelecionarPorContaId(Guid contaId)
+    public List<ListarPedidoDto> SelecionarPorContaId(Guid contaId)
     {
-        Estabelecimento? estabelecimento =
-            repositorioEstabelecimento.SelecionarDoUsuarioAtual();
-
-        if (estabelecimento == null)
-            return Result.Fail("Estabelecimento não encontrado.");
-
-        Conta? conta = repositorioConta.SelecionarPorId(contaId);
-
-        if (conta == null || conta.Mesa.EstabelecimentoId != estabelecimento.Id)
-            return Result.Fail("Conta não encontrada.");
-
-        List<ListarPedidoDto> pedidos = repositorioPedido
+        return repositorioPedido
             .SelecionarPorContaId(contaId)
-            .Select(p => new ListarPedidoDto(
-                p.Id,
-                p.Produto.Nome,
-                p.Quantidade,
-                p.Subtotal
-            ))
+            .Select(p => new ListarPedidoDto(p.Id, p.Produto.Nome, p.Quantidade, p.Subtotal))
             .ToList();
-
-        return Result.Ok(pedidos);
     }
 }

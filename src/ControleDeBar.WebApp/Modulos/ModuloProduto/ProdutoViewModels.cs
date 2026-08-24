@@ -2,11 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ControleDeBar.WebApp.Modulos.ModuloProduto;
 
-public record ListarProdutoViewModel(
-    Guid Id, 
-    string Nome, 
-    decimal Preco
-);
+public record ListarProdutoViewModel(Guid Id, string Nome, decimal Preco);
 
 public record CadastrarProdutoViewModel(
     [Required(ErrorMessage = "O campo \"Nome\" deve ser preenchido.")]
@@ -19,6 +15,8 @@ public record CadastrarProdutoViewModel(
 );
 
 public record EditarProdutoViewModel(
+    Guid Id,
+
     [Required(ErrorMessage = "O campo \"Nome\" deve ser preenchido.")]
     [StringLength(100, MinimumLength = 2, ErrorMessage = "O campo \"Nome\" deve conter entre 2 e 100 caracteres.")]
     string Nome,
@@ -28,7 +26,4 @@ public record EditarProdutoViewModel(
     decimal Preco
 );
 
-public record ExcluirProdutoViewModel(
-    Guid Id, 
-    string Nome
-);
+public record ExcluirProdutoViewModel(Guid Id, string Nome);

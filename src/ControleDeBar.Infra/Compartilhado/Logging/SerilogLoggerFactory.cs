@@ -15,6 +15,7 @@ public static class SerilogLoggerFactory
     {
         Log.Logger = SerilogFactory.Create(configuration);
 
+        // Remove o provedor padrão de logs da Microsoft
         logging.ClearProviders();
 
         services.AddSerilog(Log.Logger);

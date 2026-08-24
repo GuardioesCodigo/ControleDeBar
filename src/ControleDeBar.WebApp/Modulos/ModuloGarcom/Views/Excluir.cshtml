@@ -1,9 +1,9 @@
-@using ControleDeBar.WebApp.Modulos.ModuloGarcom
 @{
     Layout = "_Layout";
+    ViewBag.Titulo = "Excluir Garçom";
 }
 
-@model ExcluirGarcomViewModel
+@model ExcluirGarcomViewModel;
 
 <div class="alert alert-warning border-start border-warning border-4 rounded-3 col-12 col-md-6">
     Tem certeza que deseja excluir o garçom <strong>@Model.Nome</strong>? Essa ação não pode ser desfeita.
@@ -11,6 +11,7 @@
 
 <form asp-action="Excluir" method="post" class="col-12 col-md-6">
     <input asp-for="Id" type="hidden" />
+    <input asp-for="Nome" type="hidden" />
 
     <div class="d-flex gap-2 mt-3">
         <button type="submit" class="btn btn-danger rounded-pill px-4">Excluir</button>

@@ -45,5 +45,8 @@ public sealed class ContaConfiguration : IEntityTypeConfiguration<Conta>
 
         // Não mapeado: calculado em memória a partir dos Pedidos.
         builder.Ignore(c => c.ValorTotal);
+
+        builder.HasIndex(c => new { c.UserId, c.Situacao })
+            .HasDatabaseName("IX_TBConta_UserId_Situacao");
     }
 }

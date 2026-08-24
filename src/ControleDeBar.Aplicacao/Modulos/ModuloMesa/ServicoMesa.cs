@@ -1,32 +1,23 @@
 using ControleDeBar.Aplicacao.Compartilhado;
-using ControleDeBar.Dominio.Modulos.ModuloEstabelecimento;
 using ControleDeBar.Dominio.Modulos.ModuloMesa;
 using FluentResults;
 
 namespace ControleDeBar.Aplicacao.Modulos.ModuloMesa;
 
 public sealed class ServicoMesa(
-    IRepositorioMesa repositorioMesa,
-    IRepositorioEstabelecimento repositorioEstabelecimento
+    IRepositorioMesa repositorioMesa
 ) : ServicoBase<Mesa>
 {
     public Result Cadastrar(CadastrarMesaDto dto)
     {
-        Estabelecimento? estabelecimento =
-            repositorioEstabelecimento.SelecionarDoUsuarioAtual();
-
-        if (estabelecimento == null)
-            return Falha(string.Empty, "Estabelecimento não encontrado.");
-
-        if (repositorioMesa.NumeroJaExiste(dto.Numero, estabelecimento.Id))
+        if (repositorioMesa.NumeroJaExiste(dto.Numero))
             return Falha(nameof(dto.Numero), "Já existe uma mesa com este número.");
 
         Mesa mesa = new()
         {
             Numero = dto.Numero,
             QuantidadeLugares = dto.QuantidadeLugares,
-            Status = dto.Status,
-            EstabelecimentoId = estabelecimento.Id
+            Status = dto.Status
         };
 
         Result resultadoValidacao = ValidarEntidade(mesa);
@@ -41,26 +32,19 @@ public sealed class ServicoMesa(
 
     public Result Editar(EditarMesaDto dto)
     {
-        Estabelecimento? estabelecimento =
-            repositorioEstabelecimento.SelecionarDoUsuarioAtual();
-
-        if (estabelecimento == null)
-            return Falha(string.Empty, "Estabelecimento não encontrado.");
-
         Mesa? mesa = repositorioMesa.SelecionarPorId(dto.Id);
 
-        if (mesa == null || mesa.EstabelecimentoId != estabelecimento.Id)
+        if (mesa == null)
             return Falha(string.Empty, "Mesa não encontrada.");
 
-        if (repositorioMesa.NumeroJaExiste(dto.Numero, estabelecimento.Id, dto.Id))
+        if (repositorioMesa.NumeroJaExiste(dto.Numero, dto.Id))
             return Falha(nameof(dto.Numero), "Já existe uma mesa com este número.");
 
         Mesa atualizada = new()
         {
             Numero = dto.Numero,
             QuantidadeLugares = dto.QuantidadeLugares,
-            Status = dto.Status,
-            EstabelecimentoId = estabelecimento.Id
+            Status = dto.Status
         };
 
         Result resultadoValidacao = ValidarEntidade(atualizada);
@@ -75,22 +59,13 @@ public sealed class ServicoMesa(
 
     public Result Excluir(Guid id)
     {
-        Estabelecimento? estabelecimento =
-            repositorioEstabelecimento.SelecionarDoUsuarioAtual();
-
-        if (estabelecimento == null)
-            return Falha(string.Empty, "Estabelecimento não encontrado.");
-
         Mesa? mesa = repositorioMesa.SelecionarPorId(id);
 
-        if (mesa == null || mesa.EstabelecimentoId != estabelecimento.Id)
+        if (mesa == null)
             return Falha(string.Empty, "Mesa não encontrada.");
 
         if (repositorioMesa.PossuiContaAbertaVinculada(id))
-            return Falha(
-                string.Empty,
-                "Não é possível excluir uma mesa com conta aberta vinculada."
-            );
+            return Falha(string.Empty, "Não é possível excluir uma mesa com conta aberta vinculada.");
 
         repositorioMesa.Excluir(id);
 
@@ -99,43 +74,20 @@ public sealed class ServicoMesa(
 
     public List<ListarMesaDto> SelecionarTodos()
     {
-        Estabelecimento? estabelecimento =
-            repositorioEstabelecimento.SelecionarDoUsuarioAtual();
-
-        if (estabelecimento == null)
-            return [];
-
         return repositorioMesa
             .SelecionarTodos()
-            .Where(m => m.EstabelecimentoId == estabelecimento.Id)
             .OrderBy(m => m.Numero)
-            .Select(m => new ListarMesaDto(
-                m.Id,
-                m.Numero,
-                m.QuantidadeLugares,
-                m.Status
-            ))
+            .Select(m => new ListarMesaDto(m.Id, m.Numero, m.QuantidadeLugares, m.Status))
             .ToList();
     }
 
     public Result<DetalhesMesaDto> SelecionarPorId(Guid id)
     {
-        Estabelecimento? estabelecimento =
-            repositorioEstabelecimento.SelecionarDoUsuarioAtual();
-
-        if (estabelecimento == null)
-            return Result.Fail("Estabelecimento não encontrado.");
-
         Mesa? mesa = repositorioMesa.SelecionarPorId(id);
 
-        if (mesa == null || mesa.EstabelecimentoId != estabelecimento.Id)
+        if (mesa == null)
             return Result.Fail("Mesa não encontrada.");
 
-        return Result.Ok(new DetalhesMesaDto(
-            mesa.Id,
-            mesa.Numero,
-            mesa.QuantidadeLugares,
-            mesa.Status
-        ));
+        return Result.Ok(new DetalhesMesaDto(mesa.Id, mesa.Numero, mesa.QuantidadeLugares, mesa.Status));
     }
 }

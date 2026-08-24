@@ -3,8 +3,10 @@ using System.ComponentModel.DataAnnotations;
 namespace ControleDeBar.WebApp.Modulos.ModuloPedido;
 
 public record AdicionarPedidoViewModel(
+    [Required(ErrorMessage = "O campo \"Conta\" deve ser preenchido.")]
     Guid ContaId,
 
+    [Required(ErrorMessage = "O campo \"Produto\" deve ser preenchido.")]
     Guid ProdutoId,
 
     [Required(ErrorMessage = "O campo \"Quantidade\" deve ser preenchido.")]

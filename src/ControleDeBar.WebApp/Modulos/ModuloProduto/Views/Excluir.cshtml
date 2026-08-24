@@ -1,4 +1,3 @@
-@using ControleDeBar.WebApp.Modulos.ModuloProduto
 @{
     Layout = "_Layout";
     ViewBag.Titulo = "Excluir Produto";
@@ -12,6 +11,7 @@
 
 <form asp-action="Excluir" method="post" class="col-12 col-md-6">
     <input asp-for="Id" type="hidden" />
+    <input asp-for="Nome" type="hidden" />
 
     <div class="d-flex gap-2 mt-3">
         <button type="submit" class="btn btn-danger rounded-pill px-4">Excluir</button>

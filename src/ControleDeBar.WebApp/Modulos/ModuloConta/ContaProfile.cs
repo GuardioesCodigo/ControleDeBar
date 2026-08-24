@@ -9,8 +9,9 @@ public class ContaProfile : Profile
     {
         CreateMap<ListarContaDto, ListarContaViewModel>();
         CreateMap<AbrirContaViewModel, CadastrarContaDto>();
-        CreateMap<DetalhesContaDto, EditarContaViewModel>();
+        CreateMap<EditarContaViewModel, EditarContaDto>();
         CreateMap<ItemPedidoContaDto, ItemPedidoViewModel>();
         CreateMap<DetalhesContaDto, VisualizarContaViewModel>();
+        CreateMap<DetalhesContaDto, EditarContaViewModel>();
     }
 }

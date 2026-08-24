@@ -17,12 +17,13 @@ public static class InjecaoDependencia
         IConfiguration configuration
     )
     {
-        services.AddScoped<ServicoConta>();
-        services.AddScoped<ServicoProduto>();
+        services.AddScoped<ServicoEstabelecimento>();
         services.AddScoped<ServicoMesa>();
         services.AddScoped<ServicoGarcom>();
+        services.AddScoped<ServicoProduto>();
+        services.AddScoped<ServicoConta>();
+        services.AddScoped<ServicoPedido>();
         services.AddScoped<ServicoFaturamento>();
-        services.AddScoped<ServicoEstabelecimento>();
         services.AddScoped<ServicoPedido>();
     }
 }

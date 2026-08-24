@@ -1,4 +1,3 @@
-using ControleDeBar.Dominio.Compartilhado;
 using ControleDeBar.Dominio.Modulos.ModuloConta;
 using ControleDeBar.Dominio.Modulos.ModuloEstabelecimento;
 using ControleDeBar.Dominio.Modulos.ModuloGarcom;
@@ -69,16 +68,17 @@ public static class InjecaoDeDependencia
             options.Lockout.MaxFailedAccessAttempts = 5;
             options.Lockout.AllowedForNewUsers = true;
         })
-        .AddRoles<IdentityRole<Guid>>()
-        .AddEntityFrameworkStores<ControleDeBarDbContext>()
-        .AddSignInManager()
+        .AddRoles<IdentityRole<Guid>>() // Configuração de Cargos/Papéis no Identity
+        .AddEntityFrameworkStores<ControleDeBarDbContext>() // Integração com EntityFramework
+        .AddSignInManager() // Configuração do SignInManager
         .AddDefaultTokenProviders();
 
-        services.AddScoped<IRepositorioConta, RepositorioContaEmOrm>();
-        services.AddScoped<IRepositorioProduto, RepositorioProdutoEmOrm>();
+        // Injeta os repositórios de cada módulo
+        services.AddScoped<IRepositorioEstabelecimento, RepositorioEstabelecimentoEmOrm>();
         services.AddScoped<IRepositorioMesa, RepositorioMesaEmOrm>();
         services.AddScoped<IRepositorioGarcom, RepositorioGarcomEmOrm>();
-        services.AddScoped<IRepositorioEstabelecimento, RepositorioEstabelecimentoEmOrm>();
+        services.AddScoped<IRepositorioProduto, RepositorioProdutoEmOrm>();
+        services.AddScoped<IRepositorioConta, RepositorioContaEmOrm>();
         services.AddScoped<IRepositorioPedido, RepositorioPedidoEmOrm>();
     }
 }

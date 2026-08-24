@@ -1,9 +1,9 @@
-@using ControleDeBar.WebApp.Modulos.ModuloConta
 @{
     Layout = "_Layout";
+    ViewBag.Titulo = "Abrir Conta";
 }
 
-@model AbrirContaViewModel
+@model AbrirContaViewModel;
 
 <form asp-action="Abrir" method="post" class="col-12 col-md-6">
     <div class="mb-3">
@@ -15,7 +15,7 @@
     <div class="mb-3">
         <label asp-for="MesaId" class="form-label">Mesa</label>
         <select asp-for="MesaId" class="form-select" asp-items="Model.Mesas">
-            <option value="@Guid.Empty">Selecione uma mesa</option>
+            <option value="">Selecione uma mesa</option>
         </select>
         <span asp-validation-for="MesaId" class="text-danger small"></span>
     </div>
@@ -23,7 +23,7 @@
     <div class="mb-3">
         <label asp-for="GarcomId" class="form-label">Garçom</label>
         <select asp-for="GarcomId" class="form-select" asp-items="Model.Garcons">
-            <option value="@Guid.Empty">Selecione um garçom</option>
+            <option value="">Selecione um garçom</option>
         </select>
         <span asp-validation-for="GarcomId" class="text-danger small"></span>
     </div>

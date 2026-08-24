@@ -12,44 +12,21 @@ public class EstabelecimentoController(
 ) : Controller
 {
     [HttpGet]
-    public ActionResult Listar()
+    public ActionResult Visualizar()
     {
-        Result<DetalhesEstabelecimentoDto> resultado =
-            servicoEstabelecimento.SelecionarAtual();
+        Result<DetalhesEstabelecimentoDto> resultado = servicoEstabelecimento.SelecionarAtual();
 
         if (resultado.IsFailed)
         {
-            return RedirectToAction(nameof(Cadastrar));
+            TempData.AddErrorMessage(resultado);
+
+            return RedirectToAction("Index", "Home");
         }
 
-        DetalhesEstabelecimentoViewModel visualizarVm =
-            mapeador.Map<DetalhesEstabelecimentoViewModel>(resultado.Value);
+        VisualizarEstabelecimentoViewModel visualizarVm =
+            mapeador.Map<VisualizarEstabelecimentoViewModel>(resultado.Value);
 
         return View(visualizarVm);
-    }
-
-    [HttpGet]
-    public ActionResult Cadastrar()
-    {
-        return View();
-    }
-
-    [HttpPost]
-    public ActionResult Cadastrar(CadastrarEstabelecimentoViewModel cadastrarVm)
-    {
-        if (!ModelState.IsValid)
-            return View(cadastrarVm);
-
-        Result resultado = servicoEstabelecimento.Cadastrar(cadastrarVm.Nome);
-
-        if (resultado.IsFailed)
-        {
-            ModelState.AddModelError(resultado);
-
-            return View(cadastrarVm);
-        }
-
-        return RedirectToAction(nameof(Listar));
     }
 
     [HttpGet]
@@ -87,6 +64,6 @@ public class EstabelecimentoController(
             return View(editarVm);
         }
 
-        return RedirectToAction(nameof(Listar));
+        return RedirectToAction(nameof(Visualizar));
     }
 }
