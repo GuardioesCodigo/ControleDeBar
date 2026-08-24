@@ -68,12 +68,17 @@ public class MesaController(
     }
 
     [HttpPost]
-    public ActionResult Editar(EditarMesaViewModel editarVm)
+    public ActionResult Editar(Guid id, EditarMesaViewModel editarVm)
     {
         if (!ModelState.IsValid)
             return View(editarVm);
 
-        EditarMesaDto dto = mapeador.Map<EditarMesaDto>(editarVm);
+        EditarMesaDto dto = new(
+            id,
+            editarVm.Numero,
+            editarVm.QuantidadeLugares,
+            editarVm.Status
+        );
 
         Result resultado = servicoMesa.Editar(dto);
 

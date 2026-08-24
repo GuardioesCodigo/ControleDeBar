@@ -18,10 +18,6 @@ public record RegistrarViewModel
     [DataType(DataType.Password)]
     [Compare(nameof(Senha), ErrorMessage = "As senhas não conferem.")]
     public string ConfirmarSenha { get; init; } = string.Empty;
-
-    [Required(ErrorMessage = "O campo \"Nome do Estabelecimento\" deve ser preenchido.")]
-    [StringLength(100, MinimumLength = 2, ErrorMessage = "O campo \"Nome do Estabelecimento\" deve conter entre 2 e 100 caracteres.")]
-    public string NomeEstabelecimento { get; init; } = string.Empty;
 }
 
 public record EntrarViewModel
@@ -38,4 +34,3 @@ public record EntrarViewModel
 
     public string? ReturnUrl { get; init; }
 }
-

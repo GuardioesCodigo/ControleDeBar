@@ -1,6 +1,7 @@
 using AutoMapper;
 using ControleDeBar.Aplicacao.Modulos.ModuloPedido;
 using ControleDeBar.WebApp.Compartilhado.Extensions;
+using ControleDeBar.WebApp.Modulos.ModuloConta;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,11 @@ public class PedidoController(
         {
             TempData.AddErrorMessage(Result.Fail("Informe o produto e uma quantidade válida."));
 
-            return RedirectToAction("Visualizar", "Conta", new { id = adicionarVm.ContaId });
+            return RedirectToAction(
+                nameof(ContaController.Visualizar),
+                "Conta",
+                new { id = adicionarVm.ContaId }
+            );
         }
 
         CadastrarPedidoDto dto = mapeador.Map<CadastrarPedidoDto>(adicionarVm);
@@ -28,7 +33,11 @@ public class PedidoController(
         if (resultado.IsFailed)
             TempData.AddErrorMessage(resultado);
 
-        return RedirectToAction("Visualizar", "Conta", new { id = adicionarVm.ContaId });
+        return RedirectToAction(
+            nameof(ContaController.Visualizar),
+            "Conta",
+            new { id = adicionarVm.ContaId }
+        );
     }
 
     [HttpPost]
@@ -39,6 +48,10 @@ public class PedidoController(
         if (resultado.IsFailed)
             TempData.AddErrorMessage(resultado);
 
-        return RedirectToAction("Visualizar", "Conta", new { id = contaId });
+        return RedirectToAction(
+            nameof(ContaController.Visualizar),
+            "Conta",
+            new { id = contaId }
+        );
     }
 }

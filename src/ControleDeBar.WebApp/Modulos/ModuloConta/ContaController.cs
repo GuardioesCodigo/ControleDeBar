@@ -76,26 +76,15 @@ public class ContaController(
             return RedirectToAction(nameof(Listar));
         }
 
-        EditarContaViewModel editarVm =
-            mapeador.Map<EditarContaViewModel>(resultado.Value);
+        EditarContaViewModel editarVm = mapeador.Map<EditarContaViewModel>(resultado.Value);
 
-        PreencherListasSelecao(
-            editarVm.Mesas,
-            editarVm.Garcons
-        );
-
-        ViewBag.Produtos = servicoProduto.SelecionarTodos()
-            .Select(p => new SelectListItem(
-                $"{p.Nome} ({p.Preco:C})",
-                p.Id.ToString()
-            ))
-            .ToList();
+        PreencherListasSelecao(editarVm.Mesas, editarVm.Garcons);
 
         return View(editarVm);
     }
 
     [HttpPost]
-    public ActionResult Editar(EditarContaViewModel editarVm)
+    public ActionResult Editar(Guid id, EditarContaViewModel editarVm)
     {
         if (!ModelState.IsValid)
         {
@@ -104,7 +93,12 @@ public class ContaController(
             return View(editarVm);
         }
 
-        EditarContaDto dto = mapeador.Map<EditarContaDto>(editarVm);
+        EditarContaDto dto = new(
+            id,
+            editarVm.NomeCliente,
+            editarVm.MesaId,
+            editarVm.GarcomId
+        );
 
         Result resultado = servicoConta.Editar(dto);
 
@@ -119,7 +113,7 @@ public class ContaController(
 
         return RedirectToAction(nameof(Listar));
     }
-
+    
     [HttpGet]
     public ActionResult Visualizar(Guid id)
     {

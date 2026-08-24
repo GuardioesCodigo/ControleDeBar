@@ -23,8 +23,6 @@ public record CadastrarMesaViewModel(
 );
 
 public record EditarMesaViewModel(
-    Guid Id,
-
     [Required(ErrorMessage = "O campo \"Número\" deve ser preenchido.")]
     [Range(1, int.MaxValue, ErrorMessage = "O campo \"Número\" deve ser maior que zero.")]
     int Numero,

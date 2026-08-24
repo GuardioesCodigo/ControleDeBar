@@ -1,12 +1,15 @@
+@using ControleDeBar.WebApp.Modulos.ModuloProduto
 @{
     Layout = "_Layout";
     ViewBag.Titulo = "Editar Produto";
 }
 
-@model EditarProdutoViewModel;
+@model EditarProdutoViewModel
 
-<form asp-action="Editar" method="post" class="col-12 col-md-6">
-    <input asp-for="Id" type="hidden" />
+<form asp-action="Editar"
+      asp-route-id="@Context.Request.RouteValues["id"]"
+      method="post"
+      class="col-12 col-md-6">
 
     <div class="mb-3">
         <label asp-for="Nome" class="form-label">Nome</label>

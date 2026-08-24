@@ -9,7 +9,6 @@ public class MesaProfile : Profile
     {
         CreateMap<ListarMesaDto, ListarMesaViewModel>();
         CreateMap<CadastrarMesaViewModel, CadastrarMesaDto>();
-        CreateMap<EditarMesaViewModel, EditarMesaDto>();
         CreateMap<DetalhesMesaDto, EditarMesaViewModel>();
         CreateMap<DetalhesMesaDto, ExcluirMesaViewModel>();
     }

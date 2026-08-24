@@ -1,16 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ControleDeBar.Aplicacao.Modulos.ModuloEstabelecimento;
-using FluentResults;
 
 namespace ControleDeBar.WebApp.Modulos.ModuloAutenticacao;
 
 [AllowAnonymous]
 public sealed class AutenticacaoController(
     UserManager<IdentityUser<Guid>> userManager,
-    SignInManager<IdentityUser<Guid>> signInManager,
-    ServicoEstabelecimento servicoEstabelecimento
+    SignInManager<IdentityUser<Guid>> signInManager
 ) : Controller
 {
     [HttpGet]
@@ -49,22 +46,6 @@ public sealed class AutenticacaoController(
         }
 
         await signInManager.SignInAsync(user, isPersistent: false);
-
-        // Cria o estabelecimento vinculado ao usuário recém-autenticado.
-        // Precisa ocorrer após o SignInAsync: o ServicoEstabelecimento depende do
-        // IProvedorDeUsuario, que só reconhece o usuário como autenticado a partir daqui.
-        Result resultadoEstabelecimento = servicoEstabelecimento.Cadastrar(viewModel.NomeEstabelecimento);
-
-        if (resultadoEstabelecimento.IsFailed)
-        {
-            await signInManager.SignOutAsync();
-            await userManager.DeleteAsync(user);
-
-            foreach (var erro in resultadoEstabelecimento.Errors)
-                ModelState.AddModelError(string.Empty, erro.Message);
-
-            return View(viewModel);
-        }
 
         return RedirectToAction("Index", "Home");
     }

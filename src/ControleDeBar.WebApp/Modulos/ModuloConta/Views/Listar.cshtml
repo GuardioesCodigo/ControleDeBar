@@ -1,9 +1,10 @@
+@using ControleDeBar.WebApp.Modulos.ModuloConta
+@using ControleDeBar.Dominio.Modulos.ModuloConta
 @{
     Layout = "_Layout";
-    ViewBag.Titulo = "Contas";
 }
 
-@model List<ListarContaViewModel>;
+@model List<ListarContaViewModel>
 
 <a class="btn btn-outline-primary rounded-pill px-4 mb-3" asp-action="Abrir">+ Abrir Conta</a>
 
@@ -41,32 +42,25 @@ else
                     <td>@c.NumeroMesa</td>
                     <td>@c.NomeGarcom</td>
                     <td>
-                        <span class="badge rounded-pill @(c.Situacao == SituacaoConta.Aberta ? "text-bg-success" : "text-bg-secondary")">@c.Situacao</span>
+                        <span class="badge rounded-pill @(c.Situacao == SituacaoConta.Aberta ? "text-bg-success" : "text-bg-secondary")">
+                            @c.Situacao
+                        </span>
                     </td>
-                    <td>@c.ValorTotal.ToString("C")</td>
+                    <td>@c.ValorTotal.ToString(format: "C")</td>
                     <td class="text-end">
-                        <a class="btn btn-outline-primary btn-sm rounded-pill px-3" asp-action="Visualizar" asp-route-id="@c.Id">Ver</a>
+                        <a class="btn btn-outline-primary btn-sm rounded-pill px-3"
+                           asp-action="Visualizar"
+                           asp-route-id="@c.Id">
+                            Ver
+                        </a>
+
                         @if (c.Situacao == SituacaoConta.Aberta)
                         {
-
                             <a class="btn btn-outline-secondary btn-sm rounded-pill px-3"
-                            asp-action="Editar"
-                            asp-route-id="@c.Id">
+                               asp-action="Editar"
+                               asp-route-id="@c.Id">
                                 Editar
                             </a>
-
-                            <form asp-action="Fechar"
-                                asp-route-id="@c.Id"
-                                method="post"
-                                class="d-inline">
-                                <button type="submit"
-                                        class="btn btn-outline-danger btn-sm rounded-pill px-3">
-                                    Fechar
-                                </button>
-                            </form>
-
-                            <a class="btn btn-outline-secondary btn-sm rounded-pill px-3" asp-action="Editar" asp-route-id="@c.Id">Editar</a>
-
                         }
                     </td>
                 </tr>

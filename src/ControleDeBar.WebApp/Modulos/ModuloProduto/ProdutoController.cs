@@ -65,12 +65,12 @@ public class ProdutoController(
     }
 
     [HttpPost]
-    public ActionResult Editar(EditarProdutoViewModel editarVm)
+    public ActionResult Editar(Guid id, EditarProdutoViewModel editarVm)
     {
         if (!ModelState.IsValid)
             return View(editarVm);
 
-        EditarProdutoDto dto = mapeador.Map<EditarProdutoDto>(editarVm);
+        EditarProdutoDto dto = new(id, editarVm.Nome, editarVm.Preco);
 
         Result resultado = servicoProduto.Editar(dto);
 

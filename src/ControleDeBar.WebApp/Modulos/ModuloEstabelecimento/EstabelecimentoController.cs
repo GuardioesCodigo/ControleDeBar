@@ -23,8 +23,8 @@ public class EstabelecimentoController(
             return RedirectToAction("Index", "Home");
         }
 
-        VisualizarEstabelecimentoViewModel visualizarVm =
-            mapeador.Map<VisualizarEstabelecimentoViewModel>(resultado.Value);
+        DetalhesEstabelecimentoViewModel visualizarVm =
+            mapeador.Map<DetalhesEstabelecimentoViewModel>(resultado.Value);
 
         return View(visualizarVm);
     }
