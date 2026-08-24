@@ -27,10 +27,6 @@ public sealed class JornadaAtendimentoTests : E2ETestsBase
             "#ConfirmarSenha",
             "SenhaForte@123");
 
-        await Page.FillAsync(
-            "#NomeEstabelecimento",
-            nomeEstabelecimento);
-
         await Page.ClickAsync(
             "button:has-text('Criar Conta')");
 
