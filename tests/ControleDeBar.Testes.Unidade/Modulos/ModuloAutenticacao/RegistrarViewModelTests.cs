@@ -23,8 +23,7 @@ public sealed class RegistrarViewModelTests
         {
             Email = "usuario@bar.com",
             Senha = "SenhaForte@123",
-            ConfirmarSenha = "SenhaForte@123",
-            NomeEstabelecimento = "Bar do Zé"
+            ConfirmarSenha = "SenhaForte@123"
         };
 
         Assert.AreEqual(0, Validar(viewModel).Count);
@@ -38,8 +37,7 @@ public sealed class RegistrarViewModelTests
         {
             Email = "",
             Senha = "",
-            ConfirmarSenha = "",
-            NomeEstabelecimento = ""
+            ConfirmarSenha = ""
         };
 
         List<ValidationResult> erros = Validar(viewModel);
@@ -47,7 +45,6 @@ public sealed class RegistrarViewModelTests
         Assert.IsTrue(erros.Any(e => e.MemberNames.Contains(nameof(RegistrarViewModel.Email))));
         Assert.IsTrue(erros.Any(e => e.MemberNames.Contains(nameof(RegistrarViewModel.Senha))));
         Assert.IsTrue(erros.Any(e => e.MemberNames.Contains(nameof(RegistrarViewModel.ConfirmarSenha))));
-        Assert.IsTrue(erros.Any(e => e.MemberNames.Contains(nameof(RegistrarViewModel.NomeEstabelecimento))));
     }
 
     [TestMethod]
@@ -58,8 +55,7 @@ public sealed class RegistrarViewModelTests
         {
             Email = "nao-e-um-email",
             Senha = "SenhaForte@123",
-            ConfirmarSenha = "SenhaForte@123",
-            NomeEstabelecimento = "Bar do Zé"
+            ConfirmarSenha = "SenhaForte@123"
         };
 
         List<ValidationResult> erros = Validar(viewModel);
@@ -75,8 +71,7 @@ public sealed class RegistrarViewModelTests
         {
             Email = "usuario@bar.com",
             Senha = "123",
-            ConfirmarSenha = "123",
-            NomeEstabelecimento = "Bar do Zé"
+            ConfirmarSenha = "123"
         };
 
         List<ValidationResult> erros = Validar(viewModel);
