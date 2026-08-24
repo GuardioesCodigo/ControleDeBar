@@ -29,7 +29,7 @@ if (app.Environment.IsDevelopment())
 
     var dbContext = scope.ServiceProvider.GetRequiredService<ControleDeBarDbContext>();
 
-    dbContext.Database.Migrate();
+    // dbContext.Database.Migrate();
 }
 
 // Middlewares de roteamento

@@ -103,7 +103,7 @@ jobs:
         shell: pwsh
         run: |
           az webapp config appsettings set `
-            --resource-group "<NOME_DO_RESOURCE_GROUP>" `
+            --resource-group "controle-de-bar-web" `
             --name "ControleDeBarWeb" `
             --settings `
               "ConnectionStrings__SqlServerEF=${{ secrets.AZURESQL_CONNECTION_STRING }}" `
