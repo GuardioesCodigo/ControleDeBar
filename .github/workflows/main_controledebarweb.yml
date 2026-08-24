@@ -70,14 +70,14 @@ jobs:
 
       - name: Apply ORM migrations to AzureSQL
         env:
-          AZURESQL_CONNECTION_STRING: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+          AZURE_SQL_CONNECTION_STRING: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
           Infra__NewRelic__LicenseKey: ${{ secrets.NEWRELIC_LICENSE_KEY }}
         run: |
           dotnet ef database update `
             --project src/ControleDeBar.Infra/ControleDeBar.Infra.csproj `
             --startup-project src/ControleDeBar.WebApp/ControleDeBar.WebApp.csproj `
             --configuration Release `
-            --connection "$env:AZURESQL_CONNECTION_STRING"
+            --connection "$env:AZURE_SQL_CONNECTION_STRING"
 
   deploy:
     runs-on: windows-latest
